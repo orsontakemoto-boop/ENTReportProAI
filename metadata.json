@@ -1,0 +1,8 @@
+{
+  "name": "Copy of ENT Report Pro AI",
+  "description": "Professional endoscopy reporting system for Otorhinolaryngologists with video capture and AI assistance.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
