@@ -1,6 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
+// Adiciona declaração para o TypeScript aceitar 'process' no navegador
+declare const process: any;
+
 export const refineTextWithAI = async (text: string): Promise<string> => {
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
