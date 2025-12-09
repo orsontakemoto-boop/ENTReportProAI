@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 
 // Adiciona declaração para o TypeScript aceitar 'process' no navegador
@@ -96,10 +97,13 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
       }
     });
 
-    // Iterar para encontrar a parte da imagem na resposta
-    if (response.candidates && response.candidates[0].content.parts) {
-      for (const part of response.candidates[0].content.parts) {
-        if (part.inlineData) {
+    // Verificação segura (Optional Chaining) para evitar erros TS2532
+    const candidate = response.candidates?.[0];
+    const parts = candidate?.content?.parts;
+
+    if (parts) {
+      for (const part of parts) {
+        if (part.inlineData && part.inlineData.data) {
           const newBase64 = part.inlineData.data;
           // Retornar no formato Data URL pronto para o <img src>
           return `data:image/png;base64,${newBase64}`;
