@@ -499,6 +499,33 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
                  </div>
                </div>
 
+               {/* Colunas de Fotos (NOVO) */}
+               <div className="md:col-span-2 border-t border-slate-100 pt-4 mt-2">
+                 <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium text-slate-700 flex items-center gap-2">
+                       <LayoutGrid size={16} /> 
+                       Colunas na Documentação Fotográfica
+                    </label>
+                    <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                      {formData.photosGridColumns || 4} Colunas
+                    </span>
+                 </div>
+                 <input 
+                    type="range" 
+                    name="photosGridColumns" 
+                    min="2" 
+                    max="6" 
+                    step="1" 
+                    value={formData.photosGridColumns || 4} 
+                    onChange={handleChange}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                 />
+                 <div className="flex justify-between text-xs text-slate-400 mt-1">
+                   <span>2 (Imagens Grandes)</span>
+                   <span>6 (Imagens Pequenas)</span>
+                 </div>
+               </div>
+
             </div>
           </section>
 

@@ -86,6 +86,7 @@ export interface CapturedImage {
   type?: 'regular' | 'mosaic';
   customWidth?: number; // porcentagem 10-100
   customHeight?: number; // pixels
+  originalUrl?: string; // URL da imagem original (antes da IA)
 }
 
 export interface ExamTemplate {

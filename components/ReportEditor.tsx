@@ -1,8 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, FileDown, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap } from 'lucide-react';
+import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, FileDown, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, SplitSquareHorizontal } from 'lucide-react';
 import { DoctorSettings, PatientData, ReportData, CapturedImage, CustomTemplate, ExamTemplate } from '../types';
 import { EXAM_TEMPLATES } from '../constants';
-import { refineTextWithAI } from '../services/geminiService';
+import { refineTextWithAI, enhanceMedicalImage } from '../services/geminiService';
 
 interface ReportEditorProps {
   settings: DoctorSettings;
@@ -75,6 +76,8 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const [showEquipmentMenu, setShowEquipmentMenu] = useState(false);
   const [showNewExamModal, setShowNewExamModal] = useState(false);
   const [newExamData, setNewExamData] = useState<ExamTemplate & { key: string }>({ label: '', equipment: '', findings: '', conclusion: '', key: '' });
+  const [enhancingImageId, setEnhancingImageId] = useState<string | null>(null);
+  
   const reportContentRef = useRef<HTMLDivElement>(null);
   
   const availableExams = { ...EXAM_TEMPLATES, ...(settings.customExamTypes || {}) };
@@ -106,6 +109,35 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
 
   const startDictation = (field: 'findings' | 'conclusion') => { if (!('webkitSpeechRecognition' in window)) return alert("Sem suporte a voz"); const recognition = new window.webkitSpeechRecognition(); recognition.lang = 'pt-BR'; recognition.continuous = false; recognition.interimResults = false; recognition.onstart = () => setIsListening(field); recognition.onend = () => setIsListening(null); recognition.onresult = (event: any) => { const transcript = event.results[0][0].transcript; const currentText = report[field]; setReport({ ...report, [field]: currentText ? `${currentText} ${transcript}` : transcript }); }; recognition.start(); };
   const handleAiRefine = async () => { setIsRefining(true); try { const refined = await refineTextWithAI(report.findings); setReport({ ...report, findings: refined }); } catch (error: any) { alert(error.message); } finally { setIsRefining(false); } };
+  
+  const handleEnhanceImage = async (id: string, currentUrl: string) => {
+    setEnhancingImageId(id);
+    try {
+      const img = capturedImages.find(i => i.id === id);
+      const originalToSave = img?.originalUrl || currentUrl; // Preserva a original se já existir, ou usa a atual
+
+      const newUrl = await enhanceMedicalImage(currentUrl);
+      onUpdateImage(id, { 
+        url: newUrl,
+        originalUrl: originalToSave
+      });
+    } catch (e: any) {
+      alert("Erro ao aprimorar imagem: " + e.message);
+    } finally {
+      setEnhancingImageId(null);
+    }
+  };
+
+  const handleUndoEnhancement = (id: string) => {
+    const img = capturedImages.find(i => i.id === id);
+    if (img && img.originalUrl) {
+      onUpdateImage(id, {
+        url: img.originalUrl,
+        originalUrl: undefined // Remove o campo originalUrl para voltar o botão ao estado "Aprimorar"
+      });
+    }
+  };
+
   const handlePrint = () => window.print();
   const handlePdfClick = () => { 
     if (isGeneratingPdf || !reportContentRef.current) return; 
@@ -294,7 +326,63 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
               {regularImages.length > 0 && (
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-4 border-b pb-2"><h3 className={`text-sm font-bold uppercase ${colors.text}`}>Documentação Fotográfica</h3></div>
-                  <div className={`grid ${gridColsClass} gap-4`}>{regularImages.map((img) => (<div key={img.id} className="relative aspect-video group"><img src={img.url} alt="Exame" className="w-full h-full object-contain rounded-sm" />{!isGeneratingPdf && <button onClick={(e) => { e.stopPropagation(); onRemoveImage(img.id); }} className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity no-print"><X size={12} /></button>}</div>))}</div>
+                  <div className={`grid ${gridColsClass} gap-4`}>
+                    {regularImages.map((img) => (
+                      <div key={img.id} className={`relative h-auto group`}>
+                        
+                        {/* IMAGEM ÚNICA (Seja original ou aprimorada) */}
+                        <img src={img.url} alt="Exame" className="w-full h-auto object-contain rounded-sm" />
+
+                        {/* LOADING OVERLAY */}
+                        {enhancingImageId === img.id && (
+                        <div className="absolute inset-0 bg-black/60 z-30 flex flex-col items-center justify-center rounded-sm backdrop-blur-[1px]">
+                            <Loader2 size={32} className="text-white animate-spin mb-2" />
+                            <span className="text-white text-[10px] font-bold uppercase tracking-wider">Processando...</span>
+                        </div>
+                        )}
+
+                        {/* BADGE IA */}
+                        {img.originalUrl && (
+                          <div className="absolute top-2 left-2 bg-indigo-600/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10 pointer-events-none">
+                            IA
+                          </div>
+                        )}
+
+                        {!isGeneratingPdf && (
+                        <>
+                            {/* Botão Remover */}
+                            <button 
+                            onClick={(e) => { e.stopPropagation(); onRemoveImage(img.id); }} 
+                            className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity no-print z-10 shadow-sm"
+                            title="Remover Imagem"
+                            >
+                            <X size={12} />
+                            </button>
+                            
+                            {/* BOTÃO DE AÇÃO: APRIMORAR OU DESFAZER */}
+                            {img.originalUrl ? (
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleUndoEnhancement(img.id); }} 
+                                className="absolute bottom-1 right-1 bg-amber-600 text-white p-1.5 rounded-full shadow-lg hover:bg-amber-500 transition-all z-20 active:scale-95 group-hover:opacity-100 opacity-0 duration-200"
+                                title="Desfazer Aprimoramento"
+                              >
+                                <Undo2 size={14} />
+                              </button>
+                            ) : (
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleEnhanceImage(img.id, img.url); }} 
+                                className="absolute bottom-1 right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg hover:bg-indigo-500 transition-all z-20 active:scale-95 group-hover:opacity-100 opacity-0 duration-200"
+                                title="Aprimorar Qualidade (IA)"
+                                disabled={enhancingImageId === img.id}
+                              >
+                                <Sparkles size={14} />
+                              </button>
+                            )}
+                        </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
               {qrCodeUrl && (
