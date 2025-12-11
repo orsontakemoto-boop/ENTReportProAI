@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Camera, Video, MonitorStop, Copy, AlertCircle, Maximize2, Minimize2, Loader2, CheckCircle, Upload, Images, Wand2, FolderOpen, X, Move, RotateCw, ZoomIn, Crop, ArrowUpDown, LayoutGrid, Youtube, ArrowRightLeft, AlignVerticalSpaceAround, ImagePlus, Layers, RefreshCw, Scan, Square, Circle as CircleIcon, Pause, Play } from 'lucide-react';
 import { CapturedImage, BurstSession } from '../types';
@@ -689,6 +690,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
         if (e.repeat) return;
+        if (!e.key) return; // FIX: Guard against undefined key
         const key = e.key.toUpperCase();
         if (key === shortcuts.photo || key === 'F8') handlePhotoAction(true);
         if (key === shortcuts.record || key === 'F9') handleRecordAction(true);
@@ -698,6 +700,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
         }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
+        if (!e.key) return; // FIX: Guard against undefined key
         const key = e.key.toUpperCase();
         if (key === shortcuts.photo || key === 'F8') handlePhotoAction(false);
         if (key === shortcuts.record || key === 'F9') handleRecordAction(false);

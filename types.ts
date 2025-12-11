@@ -9,6 +9,11 @@ export interface DoctorSettings {
   rqe: string;
   logoBase64: string | null;
   signatureBase64: string | null;
+  
+  // Imagens da Landing Page (Novos campos)
+  landingHeroImage: string | null;
+  landingShowcaseImage: string | null;
+
   savedEquipments: string[];
   photosGridColumns: number;
   burstSpeed: number; // Novas fotos por segundo (1-60)
@@ -87,6 +92,7 @@ export interface CapturedImage {
   customWidth?: number; // porcentagem 10-100
   customHeight?: number; // pixels
   originalUrl?: string; // URL da imagem original (antes da IA)
+  isAiEnhanced?: boolean; // Flag para identificar se a imagem foi tratada pela IA
 }
 
 export interface ExamTemplate {

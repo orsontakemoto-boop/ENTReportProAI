@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Save, Upload, Plus, Trash2, PenTool, LayoutGrid, Palette, Type, AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, FolderOpen, CheckCircle, AlertTriangle, Gauge, HelpCircle, ExternalLink, Key, Keyboard, Layers, Droplet, UserCog, ToggleLeft, ToggleRight } from 'lucide-react';
+import { X, Save, Upload, Plus, Trash2, PenTool, LayoutGrid, Palette, Type, AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, FolderOpen, CheckCircle, AlertTriangle, Gauge, HelpCircle, ExternalLink, Key, Keyboard, Layers, Droplet, UserCog, ToggleLeft, ToggleRight, LayoutTemplate } from 'lucide-react';
 import { DoctorSettings } from '../types';
 
 interface SettingsModalProps {
@@ -588,6 +588,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
               </div>
             </section>
           </div>
+
         </div>
 
         <div className="p-6 border-t bg-slate-50 flex justify-end gap-3">

@@ -44,6 +44,13 @@ export const DEFAULT_SETTINGS = {
   rqe: "12345",
   logoBase64: null,
   signatureBase64: null,
+  
+  // DEVELOPER: INSIRA SUAS URLS AQUI
+  // Substitua as strings abaixo pelos links das suas imagens hospedadas (ou imports locais)
+  // Ex: "https://meusite.com/minha-foto.jpg" ou base64
+  landingHeroImage: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1000&q=80",
+  landingShowcaseImage: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80",
+
   savedEquipments: ["Ótica Rígida 70º", "Nasofibroscópio Flexível 3.2mm", "Ótica Rígida 0º"],
   customTemplates: [], 
   customExamTypes: {}, // Inicialização vazia para exames personalizados

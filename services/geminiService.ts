@@ -1,11 +1,23 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Adiciona declaração para o TypeScript aceitar 'process' no navegador
+// Declaração para satisfazer o TypeScript.
+// O Vite substitui 'process.env.API_KEY' pelo valor real da string durante o build.
+// Esta declaração impede que o TS reclame que 'process' não existe.
 declare const process: any;
 
 const getApiKey = () => {
-  const apiKey = process.env.API_KEY;
+  // Tenta acessar a chave injetada pelo Vite.
+  // Se o processo de build do Vite funcionar, 'process.env.API_KEY' será substituído por uma string.
+  // Se não funcionar e 'process' não estiver definido no navegador, isso pode lançar erro,
+  // então fazemos um acesso seguro.
+  let apiKey = '';
+  try {
+     apiKey = process.env.API_KEY;
+  } catch (e) {
+     console.warn("process.env.API_KEY não acessível diretamente.", e);
+  }
+
   if (!apiKey) {
     throw new Error("API Key do Google Gemini não configurada.");
   }

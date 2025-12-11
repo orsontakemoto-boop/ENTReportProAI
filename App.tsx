@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import ReportEditor from './components/ReportEditor';
 import CaptureStation from './components/CaptureStation';
@@ -7,7 +8,7 @@ import LandingPage from './components/LandingPage';
 import UserManual from './components/UserManual'; // Importar Manual
 import { DoctorSettings, PatientData, ReportData, CapturedImage, BurstSession } from './types';
 import { DEFAULT_SETTINGS } from './constants';
-import { getDirectoryHandle, saveDirectoryHandle } from './services/storageService';
+import { getDirectoryHandle, saveDirectoryHandle, saveFileToHandle } from './services/storageService';
 
 const App: React.FC = () => {
   // --- Landing Page State ---
@@ -110,6 +111,18 @@ const App: React.FC = () => {
     setCapturedImages(prev => [...prev, image]);
   };
 
+  // Função para adicionar uma nova imagem APÓS uma imagem específica (útil para IA criar cópias ao lado)
+  const handleAddImageAfter = (targetId: string, newImage: CapturedImage) => {
+    setCapturedImages(prev => {
+      const index = prev.findIndex(img => img.id === targetId);
+      if (index === -1) return [...prev, newImage]; // Fallback, adiciona ao final
+      
+      const newArr = [...prev];
+      newArr.splice(index + 1, 0, newImage);
+      return newArr;
+    });
+  };
+
   const handleBurstComplete = (session: BurstSession) => {
     setBurstHistory(prev => [session, ...prev]);
   };
@@ -209,34 +222,8 @@ const App: React.FC = () => {
     }
   };
 
-  const handleSavePdf = async (blob: Blob, fileName: string) => {
-    const targetHandle = sessionDirectoryHandle || directoryHandle;
-
-    if (!targetHandle) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-      return;
-    }
-
-    try {
-      // @ts-ignore
-      const fileHandle = await targetHandle.getFileHandle(fileName, { create: true });
-      const writable = await fileHandle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-      alert(`PDF salvo com sucesso na pasta do exame.`);
-    } catch (err) {
-      console.error("Erro ao salvar PDF:", err);
-      alert("Erro ao salvar o PDF na pasta selecionada.");
-    }
-  };
-
   if (showLandingPage) {
-    return <LandingPage onEnterApp={handleEnterApp} />;
+    return <LandingPage onEnterApp={handleEnterApp} settings={settings} />;
   }
 
   return (
@@ -259,8 +246,8 @@ const App: React.FC = () => {
           onRemoveImage={handleRemoveImage}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onUpdateImage={handleUpdateImage}
+          onAddImageAfter={handleAddImageAfter} // Passar nova função
           onNewReport={handleNewReport}
-          onSavePdf={handleSavePdf}
           onUpdateSettings={handleUpdateSettings}
           onOpenUserManual={() => setIsUserManualOpen(true)} // Passar handler
         />

@@ -47,3 +47,12 @@ export const getDirectoryHandle = async (): Promise<FileSystemDirectoryHandle | 
     request.onerror = () => resolve(null); // Fail gracefully
   });
 };
+
+export const saveFileToHandle = async (dirHandle: FileSystemDirectoryHandle, blob: Blob, filename: string): Promise<void> => {
+  // @ts-ignore
+  const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+  // @ts-ignore
+  const writable = await fileHandle.createWritable();
+  await writable.write(blob);
+  await writable.close();
+};
