@@ -45,6 +45,13 @@ export interface DoctorSettings {
   logoSize: 'small' | 'medium' | 'large';
   themeColor: 'blue' | 'teal' | 'slate' | 'black';
   signaturePosition: 'left' | 'center' | 'right'; // Nova opção de posição da assinatura
+  
+  // Estilo livre da assinatura (X, Y, Width)
+  signatureStyle: {
+    x: number;
+    y: number;
+    width: number;
+  } | null;
 
   // Atalhos
   photoShortcut: string;

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, Save, Upload, Plus, Trash2, PenTool, LayoutGrid, Palette, Type, AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, FolderOpen, CheckCircle, AlertTriangle, Gauge, HelpCircle, ExternalLink, Key, Keyboard, Layers, Droplet, UserCog, ToggleLeft, ToggleRight, LayoutTemplate } from 'lucide-react';
 import { DoctorSettings } from '../types';
@@ -69,12 +68,59 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
     setFormData(prev => ({ ...prev, [field]: keyName }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'logoBase64' | 'signatureBase64') => {
+  const processSignatureImage = (base64: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            resolve(base64); // Fallback
+            return;
+        }
+        ctx.drawImage(img, 0, 0);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+        
+        // Remove white background (make it transparent)
+        // Check RGB > 240 (near white)
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          
+          if (r > 230 && g > 230 && b > 230) {
+            data[i + 3] = 0; // Set Alpha to 0
+          }
+        }
+        
+        ctx.putImageData(imgData, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = () => resolve(base64);
+      img.src = base64;
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'logoBase64' | 'signatureBase64') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, [field]: reader.result as string }));
+      reader.onloadend = async () => {
+        let result = reader.result as string;
+        
+        // Se for assinatura, processar para remover fundo branco automaticamente
+        if (field === 'signatureBase64') {
+            try {
+                result = await processSignatureImage(result);
+            } catch (err) {
+                console.error("Erro ao processar assinatura", err);
+            }
+        }
+        
+        setFormData(prev => ({ ...prev, [field]: result }));
       };
       reader.readAsDataURL(file);
     }
@@ -576,7 +622,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
                   ) : (
                     <span className="text-xs text-slate-400 text-center flex flex-col items-center gap-1">
                       <PenTool size={20} />
-                      Carregar imagem da assinatura<br/>(fundo branco ou transparente)
+                      Carregar imagem da assinatura<br/>(fundo branco removido automaticamente)
                     </span>
                   )}
                 </div>

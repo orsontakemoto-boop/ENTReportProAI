@@ -79,6 +79,7 @@ export const DEFAULT_SETTINGS = {
   logoSize: 'medium',
   themeColor: 'blue',
   signaturePosition: 'center', // Posição padrão da assinatura
+  signatureStyle: null, // Novo campo para estilo livre da assinatura
   
   // Atalhos
   photoShortcut: 'F8',

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut } from 'lucide-react';
+import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move } from 'lucide-react';
 import { DoctorSettings, PatientData, ReportData, CapturedImage, CustomTemplate, ExamTemplate } from '../types';
 import { EXAM_TEMPLATES } from '../constants';
 import { refineTextWithAI, enhanceMedicalImage } from '../services/geminiService';
@@ -79,6 +79,132 @@ const MosaicResizableImage: React.FC<{
           <div className="absolute bottom-0 left-1/2 w-8 h-4 bg-white border border-blue-600 rounded-full cursor-s-resize -translate-x-1/2 translate-y-1/2 pointer-events-auto shadow-sm flex items-center justify-center z-30" onMouseDown={(e) => handleMouseDown(e, 's')}><div className="w-4 h-0.5 bg-blue-300"></div></div>
           <div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-se-resize translate-x-1/2 translate-y-1/2 pointer-events-auto shadow-md z-40" onMouseDown={(e) => handleMouseDown(e, 'se')}/>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente Assinatura Arrastável e Redimensionável
+const DraggableSignature: React.FC<{
+  settings: DoctorSettings;
+  onUpdateSettings: (settings: DoctorSettings) => void;
+}> = ({ settings, onUpdateSettings }) => {
+  if (!settings.signatureBase64) return <div className="h-12"></div>;
+
+  const style = settings.signatureStyle || { x: 0, y: 0, width: 200 };
+  const dragStartRef = useRef<{ x: number; y: number; initialX: number; initialY: number } | null>(null);
+  const resizeStartRef = useRef<{ x: number; initialWidth: number } | null>(null);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragStartRef.current = { 
+      x: e.clientX, 
+      y: e.clientY, 
+      initialX: style.x, 
+      initialY: style.y 
+    };
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (!dragStartRef.current) return;
+      const dx = ev.clientX - dragStartRef.current.x;
+      const dy = ev.clientY - dragStartRef.current.y;
+      
+      onUpdateSettings({
+        ...settings,
+        signatureStyle: {
+          ...style,
+          x: dragStartRef.current.initialX + dx,
+          y: dragStartRef.current.initialY + dy
+        }
+      });
+    };
+
+    const onMouseUp = () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      dragStartRef.current = null;
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resizeStartRef.current = { x: e.clientX, initialWidth: style.width };
+
+    const onMouseMove = (ev: MouseEvent) => {
+      if (!resizeStartRef.current) return;
+      const dx = ev.clientX - resizeStartRef.current.x;
+      const newWidth = Math.max(50, resizeStartRef.current.initialWidth + dx); // Mínimo 50px
+      
+      onUpdateSettings({
+        ...settings,
+        signatureStyle: {
+          ...style,
+          width: newWidth
+        }
+      });
+    };
+
+    const onMouseUp = () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      resizeStartRef.current = null;
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
+  // Reset function if user gets lost
+  const resetPosition = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if(confirm('Redefinir posição da assinatura?')) {
+        onUpdateSettings({
+            ...settings,
+            signatureStyle: { x: 0, y: 0, width: 200 }
+        });
+    }
+  };
+
+  return (
+    <div 
+      className="relative group inline-block"
+      style={{
+        transform: `translate(${style.x}px, ${style.y}px)`,
+        width: `${style.width}px`,
+        cursor: 'move',
+        zIndex: 20,
+        mixBlendMode: 'multiply' // FIX: Mover blend-mode para o container pai que tem o transform
+      }}
+      onMouseDown={handleMouseDown}
+      title="Arraste para mover"
+    >
+      <div className="absolute -top-6 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity no-print z-50">
+         <span className="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer" onClick={resetPosition}>
+             <Move size={10} /> Mover / Resetar
+         </span>
+      </div>
+      
+      <img 
+        src={settings.signatureBase64} 
+        alt="Assinatura" 
+        className="w-full h-auto object-contain pointer-events-none select-none" 
+      />
+      
+      {/* Border on hover */}
+      <div className="absolute inset-0 border-2 border-dashed border-blue-400 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity no-print rounded"></div>
+
+      {/* Resize Handle */}
+      <div 
+        className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full cursor-nwse-resize opacity-0 group-hover:opacity-100 transition-opacity no-print flex items-center justify-center shadow-md z-30"
+        onMouseDown={handleResizeMouseDown}
+        title="Redimensionar"
+      >
+        <div className="w-2 h-2 border-r-2 border-b-2 border-white"></div>
       </div>
     </div>
   );
@@ -375,17 +501,10 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         <div className="mt-auto pt-16 break-inside-avoid print:border-none print:pt-4 flex flex-col">
           
           <div className={`flex ${getSignatureAlignment()} mb-1`}>
+            {/* NOVO COMPONENTE DE ASSINATURA ARRASTÁVEL */}
             <div className="flex flex-col items-center min-w-[250px] relative">
-              {/* Flexbox layout: Imagem é o primeiro item, linha é o border do container abaixo */}
-              {settings.signatureBase64 ? (
-                  <img 
-                      src={settings.signatureBase64} 
-                      alt="Assinatura" 
-                      className="h-24 w-auto object-contain mix-blend-multiply mb-0 z-10" 
-                  />
-              ) : (
-                  <div className="h-12"></div> 
-              )}
+              <DraggableSignature settings={settings} onUpdateSettings={onUpdateSettings} />
+              
               <div className="w-full text-center font-bold text-slate-900 border-t border-slate-900 pt-2 mt-1">
                   {settings.doctorName || "Nome do Médico"}
               </div>
