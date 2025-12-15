@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move } from 'lucide-react';
 import { DoctorSettings, PatientData, ReportData, CapturedImage, CustomTemplate, ExamTemplate } from '../types';
@@ -344,6 +345,7 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         timestamp: Date.now(),
         type: 'regular',
         isAiEnhanced: true, // Marca como imagem de IA
+        caption: ''
       };
 
       // Adiciona a nova imagem LOGO APÓS a original
@@ -455,11 +457,11 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
 
         <div className="mb-6 flex flex-col gap-1 break-inside-avoid print:mb-2">
             <div className="flex justify-between items-end">
-               <label className="block text-xs font-bold text-slate-500 uppercase">Equipamento Utilizado</label>
+               <label className="block text-xs font-bold text-slate-500 uppercase">Equipamento utilizado e Preparo</label>
                <div className="relative no-print"><button onClick={() => setShowEquipmentMenu(!showEquipmentMenu)} className="text-slate-400 hover:text-blue-600 transition-colors p-1"><SettingsIcon size={14} /></button>{showEquipmentMenu && <div className="absolute right-0 top-6 bg-white border shadow-xl rounded-md w-64 z-50 p-2"><h4 className="text-xs font-bold text-slate-500 uppercase mb-2 px-2 border-b pb-1">Meus Equipamentos</h4><div className="max-h-40 overflow-y-auto mb-2">{(settings.savedEquipments || []).map((eq) => (<div key={eq} className="flex justify-between items-center hover:bg-slate-50 p-1 rounded group"><button type="button" onClick={() => { setReport({...report, equipment: eq}); setShowEquipmentMenu(false); }} className="text-sm text-slate-700 text-left truncate flex-1">{eq}</button><button type="button" onClick={(e) => handleDeleteEquipment(eq, e)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 size={12}/></button></div>))}</div><button type="button" onClick={handleSaveEquipment} className="w-full text-xs bg-blue-50 text-blue-700 font-bold py-1.5 rounded hover:bg-blue-100 flex items-center justify-center gap-1"><Save size={12} /> Salvar Atual</button></div>}</div>
             </div>
             
-            <input type="text" value={report.equipment} onChange={e => setReport({ ...report, equipment: e.target.value })} className="w-full border-b border-slate-300 py-1 outline-none focus:border-blue-500 text-sm print:hidden" placeholder="Descreva o equipamento..." />
+            <input type="text" value={report.equipment} onChange={e => setReport({ ...report, equipment: e.target.value })} className="w-full border-b border-slate-300 py-1 outline-none focus:border-blue-500 text-sm print:hidden" placeholder="Descreva o equipamento e o preparo..." />
             
             <div className="hidden print:block text-sm border-b border-slate-300 py-1 min-h-[1.5em] border-0">{report.equipment}</div>
         </div>
@@ -467,7 +469,7 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         <div className="mb-6 print:mb-2">
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-2">
-              <h3 className={`text-sm font-bold uppercase ${colors.text}`}>Achados Video-Endoscópicos</h3>
+              <h3 className={`text-sm font-bold uppercase ${colors.text}`}>Descrição do Exame Endoscópico</h3>
               <button onClick={() => startDictation('findings')} className={`no-print p-1.5 rounded-full transition-all ${isListening === 'findings' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`} title="Ditar"><Mic size={14} /></button>
             </div>
             <div className="flex gap-2 relative no-print">
@@ -523,45 +525,62 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
                 <div className="mb-8">
                   <div className="flex justify-between items-center mb-4 border-b pb-2"><h3 className={`text-sm font-bold uppercase ${colors.text}`}>Documentação Fotográfica</h3></div>
                   <div className={`grid ${gridColsClass} gap-4`}>
-                    {regularImages.map((img) => (
-                      <div key={img.id} className={`relative h-auto group`}>
+                    {regularImages.map((img, index) => (
+                      <div key={img.id} className={`relative h-auto group flex flex-col gap-1`}>
                         
-                        {/* IMAGEM ÚNICA (Seja original ou aprimorada) */}
-                        <img src={img.url} alt="Exame" className="w-full h-auto object-contain rounded-sm" />
+                        <div className="relative">
+                          {/* IMAGEM ÚNICA (Seja original ou aprimorada) */}
+                          <img src={img.url} alt="Exame" className="w-full h-auto object-contain rounded-sm" />
 
-                        {/* LOADING OVERLAY */}
-                        {enhancingImageId === img.id && (
-                        <div className="absolute inset-0 bg-black/60 z-30 flex flex-col items-center justify-center rounded-sm backdrop-blur-[1px]">
-                            <Loader2 size={32} className="text-white animate-spin mb-2" />
-                            <span className="text-white text-[10px] font-bold uppercase tracking-wider">Processando...</span>
-                        </div>
-                        )}
-
-                        {/* ÍCONE GEMINI AI (Substitui o selo de texto) */}
-                        {img.isAiEnhanced && (
-                          <div className="absolute top-2 left-2 bg-white/90 p-1 rounded-full shadow-sm z-10 pointer-events-none border border-indigo-100">
-                             <GeminiIcon size={16} />
+                          {/* LOADING OVERLAY */}
+                          {enhancingImageId === img.id && (
+                          <div className="absolute inset-0 bg-black/60 z-30 flex flex-col items-center justify-center rounded-sm backdrop-blur-[1px]">
+                              <Loader2 size={32} className="text-white animate-spin mb-2" />
+                              <span className="text-white text-[10px] font-bold uppercase tracking-wider">Processando...</span>
                           </div>
-                        )}
+                          )}
 
-                        {/* Botão Remover */}
-                        <button 
-                        onClick={(e) => { e.stopPropagation(); onRemoveImage(img.id); }} 
-                        className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm no-print"
-                        title="Remover Imagem"
-                        >
-                        <X size={12} />
-                        </button>
-                        
-                        {/* BOTÃO DE AÇÃO: APRIMORAR (Disponível para originais e para retocar tratados) */}
-                        <button 
-                        onClick={(e) => { e.stopPropagation(); handleEnhanceImage(img.id, img.url); }} 
-                        className="absolute bottom-1 right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg hover:bg-indigo-500 transition-all z-20 active:scale-95 group-hover:opacity-100 opacity-0 duration-200 no-print"
-                        title={img.isAiEnhanced ? "Refazer/Intensificar Tratamento (IA)" : "Aprimorar Qualidade (IA) - Cria uma cópia"}
-                        disabled={enhancingImageId === img.id}
-                        >
-                          <Sparkles size={14} />
-                        </button>
+                          {/* ÍCONE GEMINI AI (Substitui o selo de texto) */}
+                          {img.isAiEnhanced && (
+                            <div className="absolute top-2 left-2 bg-white/90 p-1 rounded-full shadow-sm z-10 pointer-events-none border border-indigo-100">
+                               <GeminiIcon size={16} />
+                            </div>
+                          )}
+
+                          {/* Botão Remover */}
+                          <button 
+                          onClick={(e) => { e.stopPropagation(); onRemoveImage(img.id); }} 
+                          className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm no-print"
+                          title="Remover Imagem"
+                          >
+                          <X size={12} />
+                          </button>
+                          
+                          {/* BOTÃO DE AÇÃO: APRIMORAR (Disponível para originais e para retocar tratados) */}
+                          <button 
+                          onClick={(e) => { e.stopPropagation(); handleEnhanceImage(img.id, img.url); }} 
+                          className="absolute bottom-1 right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg hover:bg-indigo-500 transition-all z-20 active:scale-95 group-hover:opacity-100 opacity-0 duration-200 no-print"
+                          title={img.isAiEnhanced ? "Refazer/Intensificar Tratamento (IA)" : "Aprimorar Qualidade (IA) - Cria uma cópia"}
+                          disabled={enhancingImageId === img.id}
+                          >
+                            <Sparkles size={14} />
+                          </button>
+                        </div>
+
+                        {/* LEGENDA E NUMERAÇÃO */}
+                        <div className="flex items-center gap-2 mt-1 px-1">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase shrink-0">
+                            Foto {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <input
+                            type="text"
+                            value={img.caption || ''}
+                            onChange={(e) => onUpdateImage(img.id, { caption: e.target.value })}
+                            placeholder="Legenda..."
+                            className="flex-1 text-[10px] text-slate-700 bg-transparent border-b border-transparent hover:border-slate-200 focus:border-blue-400 outline-none w-full placeholder:text-slate-300 print:placeholder:text-transparent"
+                          />
+                        </div>
+
                       </div>
                     ))}
                   </div>

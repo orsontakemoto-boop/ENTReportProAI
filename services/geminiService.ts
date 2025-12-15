@@ -35,20 +35,27 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
   const prompt = `
     Atue como um médico otorrinolaringologista sênior e acadêmico.
     
-    Abaixo você receberá um rascunho de laudo preenchido em formato de tópicos/esqueleto.
-    Sua tarefa é reescrever essas anotações transformando-as em um texto corrido, técnico, elegante e profissional.
+    Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
     
-    Diretrizes:
-    1. Mantenha a precisão clínica dos achados informados.
-    2. Eleve o nível vocabular (ex: troque 'vermelho' por 'hiperemiado', 'inchado' por 'edemaciado/hipertrófico', 'normal' por 'sem alterações evidentes' ou 'preservado').
-    3. Conecte as frases de forma fluida.
-    4. Se um tópico estiver vazio ou em branco no rascunho, ignore-o ou assuma a normalidade SE o contexto permitir, caso contrário, apenas omita.
-    5. O resultado final deve parecer que foi ditado por um especialista renomado.
+    DIRETRIZES OBRIGATÓRIAS DE FORMATAÇÃO:
+    1. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
+    2. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
+    3. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
     
-    Rascunho original:
+    DIRETRIZES DE CONTEÚDO:
+    1. Eleve o nível do vocabulário (ex: troque 'vermelho' por 'hiperemiado', 'inchado' por 'edemaciado/hipertrófico', 'normal' por 'sem alterações evidentes' ou 'preservado').
+    2. Seja conciso e direto.
+    3. Se o texto original já estiver em lista, mantenha a estrutura exata, apenas melhorando as descrições.
+    
+    Exemplo de Saída Desejada:
+    - Fossas Nasais: Mucosa trófica, sem secreções patológicas.
+    - Septo Nasal: Centrado.
+    - Orofaringe: Estruturas preservadas.
+    
+    Texto original para refinar:
     "${text}"
     
-    Responda APENAS com o texto do laudo reescrito, sem introduções, sem markdown e sem explicações.
+    Responda APENAS com a lista formatada.
   `;
 
   try {

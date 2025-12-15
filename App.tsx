@@ -8,7 +8,7 @@ import LandingPage from './components/LandingPage';
 import UserManual from './components/UserManual'; // Importar Manual
 import { DoctorSettings, PatientData, ReportData, CapturedImage, BurstSession } from './types';
 import { DEFAULT_SETTINGS } from './constants';
-import { getDirectoryHandle, saveDirectoryHandle, saveFileToHandle } from './services/storageService';
+import { getDirectoryHandle, saveDirectoryHandle, saveFileToHandle, verifyPermission } from './services/storageService';
 
 const App: React.FC = () => {
   // --- Landing Page State ---
@@ -203,21 +203,30 @@ const App: React.FC = () => {
 
     if (directoryHandle) {
        try {
-         const today = new Date();
-         const yyyy = today.getFullYear();
-         const mm = String(today.getMonth() + 1).padStart(2, '0');
-         const dd = String(today.getDate()).padStart(2, '0');
+         // CRÍTICO: Verificar e Requisitar permissão de escrita novamente
+         // Isso é necessário porque o navegador 'esquece' a permissão ao recarregar a página
+         const hasPermission = await verifyPermission(directoryHandle, true);
          
-         const safeName = data.name.trim().replace(/[^a-z0-9]/gi, '_');
-         const folderName = `${yyyy}-${mm}-${dd}_${safeName}`;
-
-         // @ts-ignore
-         const newSessionHandle = await directoryHandle.getDirectoryHandle(folderName, { create: true });
-         setSessionDirectoryHandle(newSessionHandle);
-         console.log(`Pasta da sessão criada: ${folderName}`);
+         if (!hasPermission) {
+            alert("Permissão de escrita necessária para salvar na pasta. Por favor, tente selecionar a pasta novamente nas configurações.");
+            // Não retorna erro fatal, apenas não cria a subpasta, o sistema avisará nas capturas
+         } else {
+             const today = new Date();
+             const yyyy = today.getFullYear();
+             const mm = String(today.getMonth() + 1).padStart(2, '0');
+             const dd = String(today.getDate()).padStart(2, '0');
+             
+             const safeName = data.name.trim().replace(/[^a-z0-9]/gi, '_');
+             const folderName = `${yyyy}-${mm}-${dd}_${safeName}`;
+    
+             // @ts-ignore
+             const newSessionHandle = await directoryHandle.getDirectoryHandle(folderName, { create: true });
+             setSessionDirectoryHandle(newSessionHandle);
+             console.log(`Pasta da sessão criada: ${folderName}`);
+         }
        } catch (err) {
          console.error("Erro ao criar subpasta do paciente:", err);
-         alert("Atenção: Não foi possível criar a pasta automática do paciente. Os arquivos serão salvos na pasta raiz.");
+         alert("Atenção: Não foi possível criar a pasta automática do paciente. Os arquivos serão salvos na pasta raiz (se houver permissão).");
        }
     }
   };

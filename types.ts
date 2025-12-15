@@ -100,6 +100,7 @@ export interface CapturedImage {
   customHeight?: number; // pixels
   originalUrl?: string; // URL da imagem original (antes da IA)
   isAiEnhanced?: boolean; // Flag para identificar se a imagem foi tratada pela IA
+  caption?: string; // Nova legenda opcional
 }
 
 export interface ExamTemplate {

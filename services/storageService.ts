@@ -56,3 +56,20 @@ export const saveFileToHandle = async (dirHandle: FileSystemDirectoryHandle, blo
   await writable.write(blob);
   await writable.close();
 };
+
+export const verifyPermission = async (handle: FileSystemDirectoryHandle, readWrite: boolean = false): Promise<boolean> => {
+  const options = { mode: readWrite ? 'readwrite' : 'read' };
+  try {
+    // @ts-ignore
+    if ((await handle.queryPermission(options)) === 'granted') {
+      return true;
+    }
+    // @ts-ignore
+    if ((await handle.requestPermission(options)) === 'granted') {
+      return true;
+    }
+  } catch (error) {
+    console.error("Erro ao verificar permissão:", error);
+  }
+  return false;
+};

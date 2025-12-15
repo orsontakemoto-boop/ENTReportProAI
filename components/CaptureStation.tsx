@@ -2,6 +2,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Camera, Video, MonitorStop, Copy, AlertCircle, Maximize2, Minimize2, Loader2, CheckCircle, Upload, Images, Wand2, FolderOpen, X, Move, RotateCw, ZoomIn, Crop, ArrowUpDown, LayoutGrid, Youtube, ArrowRightLeft, AlignVerticalSpaceAround, ImagePlus, Layers, RefreshCw, Scan, Square, Circle as CircleIcon, Pause, Play } from 'lucide-react';
 import { CapturedImage, BurstSession } from '../types';
+import { verifyPermission, saveFileToHandle } from '../services/storageService';
 
 interface CaptureStationProps {
   onCaptureImage: (image: CapturedImage) => void;
@@ -246,32 +247,11 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
     return `${date}_${safeName}_${type}_${timestamp}.${ext}`;
   };
 
-  const verifyPermission = async (handle: FileSystemDirectoryHandle) => {
-    const options = { mode: 'readwrite' };
-    try {
-      // @ts-ignore
-      if ((await handle.queryPermission(options)) === 'granted') {
-        return true;
-      }
-      // @ts-ignore
-      if ((await handle.requestPermission(options)) === 'granted') {
-        return true;
-      }
-    } catch (error) {
-      console.error("Erro ao verificar permissão:", error);
-    }
-    return false;
-  };
-
   const saveBlobToDirectory = async (blob: Blob, filename: string, targetHandle?: FileSystemDirectoryHandle) => {
     const handleToUse = targetHandle || directoryHandle;
     if (!handleToUse) return false;
     try {
-      // @ts-ignore
-      const fileHandle = await handleToUse.getFileHandle(filename, { create: true });
-      const writable = await fileHandle.createWritable();
-      await writable.write(blob);
-      await writable.close();
+      await saveFileToHandle(handleToUse, blob, filename);
       return true;
     } catch (err) {
       console.error("Error saving file:", err);
@@ -443,7 +423,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
   const takeSinglePhoto = useCallback(async () => {
     if (directoryHandle) {
         // Ensure permission is granted explicitly during the click event
-        const hasPermission = await verifyPermission(directoryHandle);
+        const hasPermission = await verifyPermission(directoryHandle, true);
         if (!hasPermission) {
             alert("Permissão para salvar na pasta negada pelo navegador.");
             return;
@@ -462,7 +442,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
     }
     
     // Explicit permission check on start
-    if (!(await verifyPermission(directoryHandle))) {
+    if (!(await verifyPermission(directoryHandle, true))) {
        alert("Permissão de escrita na pasta negada.");
        return;
     }
@@ -525,7 +505,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
       let useInMemory = false;
       
       if (directoryHandle) {
-         if (!(await verifyPermission(directoryHandle))) {
+         if (!(await verifyPermission(directoryHandle, true))) {
             alert("Permissão de escrita na pasta negada. Verifique as configurações.");
             return;
          }
@@ -633,7 +613,7 @@ const CaptureStation: React.FC<CaptureStationProps> = ({
     if (isDown) {
       if (burstPressTimerRef.current === null) {
         if (directoryHandle) {
-             await verifyPermission(directoryHandle);
+             await verifyPermission(directoryHandle, true);
         }
         burstPressTimerRef.current = window.setTimeout(() => {
           startBurst();
