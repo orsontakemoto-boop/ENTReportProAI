@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, Calendar, Users, ArrowRight, Activity, FileText, Briefcase, MapPin, UserPlus, FilePlus } from 'lucide-react';
+import { User, Calendar, Users, ArrowRight, Activity, FileText, Briefcase, MapPin, UserPlus, FilePlus, Stethoscope } from 'lucide-react';
 import { PatientData, DoctorSettings } from '../types';
 
 interface PatientModalProps {
@@ -14,6 +14,7 @@ const PatientModal: React.FC<PatientModalProps> = ({ isOpen, onSubmit, settings 
     name: '',
     age: '',
     gender: '',
+    performedBy: '',
     date: new Date().toLocaleDateString('pt-BR'),
     document: '',
     profession: '',
@@ -23,6 +24,13 @@ const PatientModal: React.FC<PatientModalProps> = ({ isOpen, onSubmit, settings 
     requestedBy: '',
     customValues: {}
   });
+
+  // Atualiza o médico padrão quando as configurações carregam
+  useEffect(() => {
+    if (settings?.doctorName && !formData.performedBy) {
+      setFormData(prev => ({ ...prev, performedBy: settings.doctorName }));
+    }
+  }, [settings, isOpen]);
 
   // Load visible fields from settings or use defaults
   const visible = settings?.visiblePatientFields || {
@@ -135,6 +143,21 @@ const PatientModal: React.FC<PatientModalProps> = ({ isOpen, onSubmit, settings 
                 </div>
               </div>
 
+              <div className="space-y-1">
+                <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                  <Stethoscope size={16} className="text-blue-600" />
+                  Exame realizado por:
+                </label>
+                <input
+                  type="text"
+                  name="performedBy"
+                  value={formData.performedBy}
+                  onChange={handleChange}
+                  className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 focus:bg-white"
+                  placeholder="Nome do médico"
+                />
+              </div>
+
               {visible.document && (
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
@@ -151,7 +174,11 @@ const PatientModal: React.FC<PatientModalProps> = ({ isOpen, onSubmit, settings 
                   />
                 </div>
               )}
+            </div>
 
+            {/* Coluna 2: Dados Complementares e Customizados */}
+            <div className="space-y-4">
+              
               {visible.insurance && (
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
@@ -168,11 +195,7 @@ const PatientModal: React.FC<PatientModalProps> = ({ isOpen, onSubmit, settings 
                   />
                 </div>
               )}
-            </div>
 
-            {/* Coluna 2: Dados Complementares e Customizados */}
-            <div className="space-y-4">
-              
               {visible.profession && (
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-slate-700 flex items-center gap-2">

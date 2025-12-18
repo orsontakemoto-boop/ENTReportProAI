@@ -64,6 +64,7 @@ const App: React.FC = () => {
     name: '',
     age: '',
     gender: '',
+    performedBy: '', // Inicialmente vazio, será preenchido pelo Modal
     date: new Date().toLocaleDateString('pt-BR'),
     document: '',
     profession: '',
@@ -175,6 +176,7 @@ const App: React.FC = () => {
         name: '',
         age: '',
         gender: '',
+        performedBy: '',
         date: new Date().toLocaleDateString('pt-BR'),
         document: '',
         profession: '',

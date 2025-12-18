@@ -71,6 +71,7 @@ export interface PatientData {
   age: string;
   gender: 'M' | 'F' | 'Outro' | '';
   date: string;
+  performedBy: string; // Novo campo: Exame realizado por
   // Campos opcionais padrão
   document?: string; // RG ou CPF
   profession?: string;

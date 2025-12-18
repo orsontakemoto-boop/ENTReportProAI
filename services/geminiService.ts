@@ -1,16 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// Declaração para satisfazer o TypeScript.
-// O Vite substitui 'process.env.API_KEY' pelo valor real da string durante o build.
-// Esta declaração impede que o TS reclame que 'process' não existe.
 declare const process: any;
 
 const getApiKey = () => {
-  // Tenta acessar a chave injetada pelo Vite.
-  // Se o processo de build do Vite funcionar, 'process.env.API_KEY' será substituído por uma string.
-  // Se não funcionar e 'process' não estiver definido no navegador, isso pode lançar erro,
-  // então fazemos um acesso seguro.
   let apiKey = '';
   try {
      apiKey = process.env.API_KEY;
@@ -34,41 +27,63 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
   
   const prompt = `
     Atue como um médico otorrinolaringologista sênior e acadêmico.
-    
     Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
-    
     DIRETRIZES OBRIGATÓRIAS DE FORMATAÇÃO:
     1. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
     2. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
     3. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
-    
-    DIRETRIZES DE CONTEÚDO:
-    1. Eleve o nível do vocabulário (ex: troque 'vermelho' por 'hiperemiado', 'inchado' por 'edemaciado/hipertrófico', 'normal' por 'sem alterações evidentes' ou 'preservado').
-    2. Seja conciso e direto.
-    3. Se o texto original já estiver em lista, mantenha a estrutura exata, apenas melhorando as descrições.
-    
-    Exemplo de Saída Desejada:
-    - Fossas Nasais: Mucosa trófica, sem secreções patológicas.
-    - Septo Nasal: Centrado.
-    - Orofaringe: Estruturas preservadas.
-    
     Texto original para refinar:
     "${text}"
-    
-    Responda APENAS com a lista formatada.
   `;
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: prompt,
     });
     
-    const result = response.text;
-    return result || text;
+    return response.text || text;
   } catch (error) {
     console.error("Gemini Error:", error);
-    throw new Error("Falha ao conectar com a IA. Verifique sua chave API.");
+    throw new Error("Falha ao conectar com a IA.");
+  }
+};
+
+export const generateConclusionWithAI = async (findings: string): Promise<string> => {
+  const apiKey = getApiKey();
+  if (!findings.trim()) {
+    throw new Error("A descrição do exame está vazia. Descreva os achados primeiro.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: apiKey });
+  
+  const prompt = `
+    Atue como um médico otorrinolaringologista sênior. 
+    Analise a descrição dos achados endoscópicos abaixo e forneça uma "Conclusão" ou "Hipótese Diagnóstica" precisa e concisa.
+    
+    DIRETRIZES:
+    1. Use terminologia médica formal (ex: em vez de 'carne no nariz', use 'hipertrofia de cornetos' ou 'adenoides').
+    2. Se houver sinais de refluxo, mencione 'Sinais sugestivos de refluxo laringofaríngeo'.
+    3. Se houver desvio de septo, classifique-o se possível.
+    4. Seja direto: forneça apenas os diagnósticos encontrados.
+    5. Inicie com "Exame compatível com:" ou "Hipótese Diagnóstica:".
+    
+    Achados descritos:
+    "${findings}"
+    
+    Responda apenas com o texto da conclusão.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+    });
+    
+    return response.text || "";
+  } catch (error) {
+    console.error("Gemini Conclusion Error:", error);
+    throw new Error("Falha ao gerar conclusão automática.");
   }
 };
 
@@ -80,7 +95,6 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
      throw new Error("Imagem inválida.");
   }
 
-  // Extrair o tipo MIME e os dados base64 da string URL
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
   if (!matches || matches.length !== 3) {
     throw new Error("Formato de imagem inválido.");
@@ -89,13 +103,8 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
   const base64Data = matches[2];
 
   const prompt = `
-    Esta é uma imagem de endoscopia de fibra óptica de baixa qualidade, apresentando desfoque de movimento/foco e artefatos de mosaico/granulação típicos de fibras. Meu objetivo é restaurá-la para a nitidez e riqueza de detalhes comparáveis a uma imagem de endoscopia rígida, focando na clareza total dos detalhes teciduais.
-    
-    Instrução:
-     * Identifique as regiões mais afetadas pelo desfoque e granulação.
-     * Restaure digitalmente a imagem, aplicando técnicas de super-resolução e desborramento para eliminar artefatos de fibra óptica e maximizar a nitidez do detalhe (vasos, textura da mucosa, margens).
-     * A saída deve ser uma imagem corrigida com alta fidelidade diagnóstica.
-     * Mantenha as cores originais e a anatomia exata, apenas melhore a qualidade.
+    Esta é uma imagem de endoscopia de fibra óptica. Restaure-a para alta definição, 
+    eliminando o efeito de mosaico das fibras e melhorando a nitidez da mucosa e vasos sanguíneos.
   `;
 
   try {
@@ -103,36 +112,25 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
-          {
-            inlineData: {
-              mimeType: mimeType,
-              data: base64Data
-            }
-          },
-          {
-            text: prompt
-          }
+          { inlineData: { mimeType: mimeType, data: base64Data } },
+          { text: prompt }
         ]
       }
     });
 
-    // Verificação segura (Optional Chaining) para evitar erros TS2532
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts;
 
     if (parts) {
       for (const part of parts) {
         if (part.inlineData && part.inlineData.data) {
-          const newBase64 = part.inlineData.data;
-          // Retornar no formato Data URL pronto para o <img src>
-          return `data:image/png;base64,${newBase64}`;
+          return `data:image/png;base64,${part.inlineData.data}`;
         }
       }
     }
-
     throw new Error("A IA não retornou uma imagem válida.");
   } catch (error) {
     console.error("Gemini Image Enhancement Error:", error);
-    throw new Error("Falha ao aprimorar a imagem. Tente novamente.");
+    throw new Error("Falha ao aprimorar a imagem.");
   }
 };
