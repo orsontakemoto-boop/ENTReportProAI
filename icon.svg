@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fundo com gradiente premium e cantos arredondados (estilo iOS/Modern Desktop) -->
+  <rect width="512" height="512" rx="110" fill="url(#premiumGradient)"/>
+  
+  <!-- Símbolo da Cruz Médica Estilizada -->
+  <path d="M256 120V392M120 256H392" stroke="white" stroke-width="65" stroke-linecap="round"/>
+  
+  <!-- Lente do Endoscópio Central -->
+  <circle cx="256" cy="256" r="60" fill="#1E3A8A" stroke="white" stroke-width="12"/>
+  
+  <!-- Reflexo da Lente (Efeito de vidro) -->
+  <circle cx="278" cy="234" r="14" fill="white" fill-opacity="0.6"/>
+  <circle cx="240" cy="272" r="6" fill="white" fill-opacity="0.3"/>
+
+  <!-- Definição do Gradiente -->
+  <defs>
+    <linearGradient id="premiumGradient" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#1E3A8A"/>
+    </linearGradient>
+  </defs>
+</svg>
