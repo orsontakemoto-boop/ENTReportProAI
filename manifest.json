@@ -1,20 +1,23 @@
 {
+  "id": "com.entreport.pro.ai",
   "name": "ENT Report Pro AI",
-  "short_name": "ENT Pro",
+  "short_name": "ENT Report Pro",
   "description": "Sistema Profissional de Laudos e Captura para Otorrinolaringologia",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#1e3a8a",
   "icons": [
     {
-      "src": "./icon.svg",
+      "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "./icon.svg",
+      "src": "/icon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable"
