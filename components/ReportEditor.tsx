@@ -44,6 +44,42 @@ interface ReportEditorProps {
   onOpenUserManual: () => void;
 }
 
+// Função para formatar texto Markdown básico (Negrito e Listas) para o laudo impresso
+const renderFormattedText = (text: string) => {
+  if (!text) return null;
+  
+  return text.split('\n').map((line, i) => {
+    // Detecta se a linha é um item de lista (começa com "- ")
+    const trimmedLine = line.trim();
+    const isListItem = trimmedLine.startsWith('- ');
+    const content = isListItem ? trimmedLine.substring(2) : line;
+
+    // Divide a linha em partes baseado no padrão de negrito **texto**
+    const parts = content.split(/(\*\*.*?\*\*)/g);
+    const formattedContent = parts.map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} className="font-bold">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+
+    if (isListItem) {
+      return (
+        <div key={i} className="flex gap-2 mb-1 pl-1">
+          <span className="shrink-0">•</span>
+          <span className="flex-1">{formattedContent}</span>
+        </div>
+      );
+    }
+
+    return (
+      <div key={i} className="mb-1 min-h-[1.2em]">
+        {formattedContent}
+      </div>
+    );
+  });
+};
+
 const MosaicResizableImage: React.FC<{
   img: CapturedImage;
   onUpdate: (id: string, updates: Partial<CapturedImage>) => void;
@@ -528,7 +564,9 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           <div className={`relative border-2 rounded-xl overflow-hidden transition-all duration-300 ${isListening === 'findings' ? 'border-red-400 ring-4 ring-red-50' : 'border-slate-200 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50/50 focus-within:shadow-sm'} bg-white print:border-none print:p-0`}>
             {isListening === 'findings' && <div className="absolute top-3 right-3 flex items-center gap-2 text-red-500 text-[10px] font-bold uppercase tracking-widest animate-pulse bg-white border border-red-100 px-3 py-1.5 rounded-full shadow-sm z-10"><Mic size={14} /> Gravando...</div>}
             <textarea ref={findingsRef} value={report.findings} onChange={e => setReport({ ...report, findings: e.target.value })} className="w-full min-h-[350px] p-5 outline-none resize-none text-sm leading-relaxed print:hidden bg-slate-50/30 focus:bg-white transition-colors" placeholder="Descreva os achados detalhados do exame..." />
-            <div className="hidden print:block p-0 text-sm leading-relaxed whitespace-pre-wrap min-h-[1em]">{report.findings}</div>
+            <div className="hidden print:block p-0 text-sm leading-relaxed min-h-[1em]">
+              {renderFormattedText(report.findings)}
+            </div>
           </div>
           
           <div className="mt-3 flex justify-end no-print">
@@ -571,7 +609,9 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           <div className={`relative border-2 rounded-xl overflow-hidden transition-all duration-300 ${isListening === 'conclusion' ? 'border-red-400 ring-4 ring-red-50' : 'border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-50/50 focus-within:shadow-sm'} bg-slate-50/50 print:bg-white print:border-none print:p-0`}>
             {isListening === 'conclusion' && <div className="absolute top-3 right-3 flex items-center gap-2 text-red-500 text-[10px] font-bold uppercase tracking-widest animate-pulse bg-white border border-red-100 px-3 py-1.5 rounded-full shadow-sm z-10"><Mic size={14} /> Gravando...</div>}
             <textarea ref={conclusionRef} value={report.conclusion} onChange={e => setReport({ ...report, conclusion: e.target.value })} className="w-full min-h-[120px] p-5 outline-none resize-none text-sm leading-relaxed bg-transparent font-bold text-slate-800 print:hidden placeholder:font-normal" placeholder="Conclusão diagnóstica final..." />
-            <div className="hidden print:block p-0 text-sm leading-relaxed font-bold text-slate-800 min-h-[1em] whitespace-pre-wrap">{report.conclusion}</div>
+            <div className="hidden print:block p-0 text-sm leading-relaxed font-bold text-slate-800 min-h-[1em]">
+              {renderFormattedText(report.conclusion)}
+            </div>
           </div>
         </div>
 

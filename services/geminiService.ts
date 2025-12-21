@@ -28,10 +28,13 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
   const prompt = `
     Atue como um médico otorrinolaringologista sênior e acadêmico.
     Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
-    DIRETRIZES OBRIGATÓRIAS DE FORMATAÇÃO:
-    1. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
-    2. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
-    3. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
+    
+    DIRETRIZES OBRIGATÓRIAS:
+    1. **APENAS O CONTEÚDO**: Retorne estritamente o texto refinado. Não adicione introduções, saudações, explicações ou textos como "Como médico sênior..." ou "Aqui está o seu laudo".
+    2. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
+    3. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
+    4. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
+    
     Texto original para refinar:
     "${text}"
   `;
@@ -42,7 +45,7 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
       contents: prompt,
     });
     
-    return response.text || text;
+    return response.text?.trim() || text;
   } catch (error) {
     console.error("Gemini Error:", error);
     throw new Error("Falha ao conectar com a IA.");
@@ -67,6 +70,7 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
     3. Se houver desvio de septo, classifique-o se possível.
     4. Seja direto: forneça apenas os diagnósticos encontrados.
     5. Inicie com "Exame compatível com:" ou "Hipótese Diagnóstica:".
+    6. **NÃO ADICIONE INTRODUÇÃO**: Responda apenas com o texto da conclusão.
     
     Achados descritos:
     "${findings}"
@@ -80,7 +84,7 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
       contents: prompt,
     });
     
-    return response.text || "";
+    return response.text?.trim() || "";
   } catch (error) {
     console.error("Gemini Conclusion Error:", error);
     throw new Error("Falha ao gerar conclusão automática.");
