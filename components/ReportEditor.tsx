@@ -394,7 +394,7 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           <div className="mt-3 flex justify-end no-print"><button onClick={handleAiRefine} disabled={isRefining} className={`flex items-center gap-2 bg-gradient-to-r ${colors.aiBtn} text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 active:scale-95`}>{isRefining ? <Loader2 size={18} className="animate-spin" /> : <Wand2 size={18} />}<span>Refinar Texto com IA</span></button></div>
         </div>
 
-        <div className="mb-10 print:mb-2 group/section">
+        <div className="mb-6 print:mb-2 group/section">
            <div className="flex justify-between items-center mb-2.5">
               <div className="flex items-center gap-2.5"><div className="bg-slate-100 p-1.5 rounded-lg text-slate-600 group-hover/section:bg-indigo-50 group-hover/section:text-indigo-600 transition-colors"><BrainCircuit size={18} /></div><h3 className={`text-sm font-bold uppercase tracking-wider ${colors.text}`}>Conclusão / Hipótese Diagnóstica</h3><button onClick={() => startDictation('conclusion')} className={`no-print p-2 rounded-full shadow-sm transition-all ${isListening === 'conclusion' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'}`} title="Ditar Conclusão"><Mic size={16} /></button></div>
               <button onClick={handleAiConclusion} disabled={isGeneratingConclusion} className={`no-print flex items-center gap-2 bg-gradient-to-r ${colors.aiBtn} text-white px-4 py-2 rounded-xl font-bold text-xs shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 active:scale-95`}>{isGeneratingConclusion ? <Loader2 size={14} className="animate-spin" /> : <Bot size={14} />}<span>Sugerir Conclusão com IA</span></button>
@@ -406,7 +406,7 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           </div>
         </div>
 
-        <div className="mt-auto pt-16 break-inside-avoid print:border-none print:pt-4 flex flex-col">
+        <div className="mt-auto pt-6 break-inside-avoid print:border-none print:pt-2 flex flex-col">
           <div className={`flex ${getSignatureAlignment()} mb-1`}><div className="flex flex-col items-center min-w-[250px] relative"><DraggableSignature settings={settings} onUpdateSettings={onUpdateSettings} /><div className="w-full text-center font-bold text-slate-900 border-t border-slate-900 pt-2 mt-1">{settings.doctorName || "Nome do Médico"}</div><div className="text-center text-sm text-slate-600">CRM: {settings.crm} {settings.rqe ? `| RQE: ${settings.rqe}` : ''}</div></div></div>
           <div className="print:break-after-page"></div>
           {(regularImages.length > 0 || qrCodeUrl) && (

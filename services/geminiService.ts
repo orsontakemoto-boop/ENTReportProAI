@@ -8,11 +8,16 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
-    Atue como um médico otorrinolaringologista sênior e acadêmico.
-    Refine o vocabulário técnico do laudo abaixo.
-    1. PRESERVE O NEGRITO (**texto**).
-    2. Retorne apenas o texto refinado em tópicos.
-    Texto: "${text}"
+    Atue como um médico otorrinolaringologista sênior. 
+    Refine o vocabulário técnico do laudo abaixo seguindo estas regras estritas:
+    1. PRESERVE INTEGRALMENTE a estrutura de tópicos e os termos em NEGRITO (**texto**).
+    2. Use linguagem CULTA, TÉCNICA e EXTREMAMENTE CONCISA.
+    3. Remova adjetivos desnecessários ou termos literários/rebuscados. Seja direto ao ponto (ex: em vez de "apresenta-se com desvio", use "desvio para a direita").
+    4. Se o texto estiver em tópicos, mantenha-os.
+    5. Retorne APENAS o laudo refinado, sem introduções ou comentários.
+
+    Texto a refinar: 
+    "${text}"
   `;
 
   try {
@@ -35,7 +40,10 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
   
   const prompt = `
     Atue como um médico otorrinolaringologista sênior.
-    Forneça uma conclusão médica concisa em negrito baseada nestes achados: "${findings}"
+    Forneça uma conclusão médica técnica, direta e muito concisa baseada nestes achados.
+    Use NEGRITO (**texto**) para o diagnóstico principal. 
+    Evite frases longas.
+    Achados: "${findings}"
   `;
 
   try {
