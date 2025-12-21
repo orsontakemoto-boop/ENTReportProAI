@@ -1,7 +1,13 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-// API key is obtained directly from process.env.API_KEY per instructions.
+// Declaração para satisfazer o compilador TypeScript (tsc) durante o build no Vercel.
+// O valor real é injetado pelo Vite através da diretiva 'define' no vite.config.ts.
+declare var process: {
+  env: {
+    API_KEY: string;
+  };
+};
 
 export const refineTextWithAI = async (text: string): Promise<string> => {
   if (!text.trim()) {
