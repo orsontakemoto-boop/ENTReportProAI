@@ -176,9 +176,12 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const findingsRef = useRef<HTMLTextAreaElement>(null);
   const conclusionRef = useRef<HTMLTextAreaElement>(null);
-  const recognitionRef = useRef<any>(null); // REF PARA CONTROLE DO RECOGNITION
+  const recognitionRef = useRef<any>(null); 
   
   const availableExams = { ...EXAM_TEMPLATES, ...(settings.customExamTypes || {}) };
+  const customExamKeys = settings.customExamTypes ? Object.keys(settings.customExamTypes) : [];
+  const isSelectedCustom = customExamKeys.includes(report.examType);
+
   const regularImages = capturedImages.filter(img => !img.type || img.type === 'regular');
   const mosaicImages = capturedImages.filter(img => img.type === 'mosaic');
   const hasAiImages = regularImages.some(img => img.isAiEnhanced);
@@ -210,6 +213,15 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     setReport({ ...report, examType: key, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion }); 
     setShowNewExamModal(false); 
     setNewExamData({ label: '', equipment: '', findings: '', conclusion: '', key: '' });
+  };
+
+  const handleDeleteCustomExam = () => {
+    if (!report.examType || !isSelectedCustom) return;
+    if (confirm(`Excluir o tipo de exame "${availableExams[report.examType].label}" permanentemente?`)) {
+      const { [report.examType]: _, ...remainingTypes } = settings.customExamTypes || {};
+      onUpdateSettings({ ...settings, customExamTypes: remainingTypes });
+      setReport({ ...report, examType: '', findings: '', conclusion: '', equipment: '' });
+    }
   };
 
   const handleSaveTemplate = () => { 
@@ -347,8 +359,34 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         </div>
         
         <div className="mb-4 no-print bg-slate-50 p-2 rounded-lg border border-slate-200 flex items-center justify-start gap-2">
-            <label className="text-xs font-bold text-slate-500 uppercase">Selecionar Exame:</label>
-            <select value={report.examType} onChange={handleExamChange} className="bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium outline-none focus:border-blue-500 cursor-pointer"><option value="" disabled>Escolha...</option><optgroup label="Padrões">{Object.entries(EXAM_TEMPLATES).map(([key, tpl]) => (<option key={key} value={key}>{(tpl as ExamTemplate).label}</option>))}</optgroup>{(settings.customExamTypes && Object.keys(settings.customExamTypes).length > 0) && (<optgroup label="Meus Exames">{Object.entries(settings.customExamTypes).map(([key, tpl]) => (<option key={key} value={key}>{(tpl as ExamTemplate).label}</option>))}</optgroup>)}<option value="NEW_CUSTOM_EXAM" className="font-bold text-blue-600">+ Criar Novo...</option></select>
+            <label className="text-xs font-bold text-slate-500 uppercase shrink-0">Tipo de Exame:</label>
+            <div className="flex-1 flex items-center gap-2">
+              <select value={report.examType} onChange={handleExamChange} className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium outline-none focus:border-blue-500 cursor-pointer">
+                <option value="" disabled>Escolha...</option>
+                <option value="NEW_CUSTOM_EXAM" className="font-bold text-blue-600">+ Criar Novo...</option>
+                {(settings.customExamTypes && Object.keys(settings.customExamTypes).length > 0) && (
+                  <optgroup label="Meus Exames">
+                    {Object.entries(settings.customExamTypes).map(([key, tpl]) => (
+                      <option key={key} value={key}>{(tpl as ExamTemplate).label}</option>
+                    ))}
+                  </optgroup>
+                )}
+                <optgroup label="Padrões">
+                  {Object.entries(EXAM_TEMPLATES).map(([key, tpl]) => (
+                    <option key={key} value={key}>{(tpl as ExamTemplate).label}</option>
+                  ))}
+                </optgroup>
+              </select>
+              {isSelectedCustom && (
+                <button 
+                  onClick={handleDeleteCustomExam} 
+                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" 
+                  title="Excluir este tipo de exame"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
         </div>
 
         <div className="text-center mb-6 break-inside-avoid print:mb-2"><h2 className={`text-xl font-bold uppercase inline-block px-8 pb-1 ${colors.text} tracking-wide`}>{getExamLabel()}</h2></div>
@@ -436,8 +474,6 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
       </div>
 
       {/* --- MODAIS DE SUPORTE --- */}
-      
-      {/* Modal: Criar Novo Tipo de Exame */}
       {showNewExamModal && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
@@ -471,7 +507,6 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         </div>
       )}
 
-      {/* Modal: LaringoAI Link */}
       {showLaringoModal && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
@@ -487,7 +522,6 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           </div>
         </div>
       )}
-
     </div>
   );
 };
