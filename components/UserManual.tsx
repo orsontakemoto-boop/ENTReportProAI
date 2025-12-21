@@ -37,7 +37,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
         {/* Content Scrollable */}
         <div className="flex-1 overflow-y-auto p-10 space-y-16 bg-slate-50/50 thin-scrollbar">
           
-          {/* SECTION: SUPER DICA DE PRODUTIVIDADE - DITADO SIMULTÂNEO */}
+          {/* SECTION: SUPER DICA DE PRODUTIVIDADE */}
           <section className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
               <Zap size={120} />
@@ -52,50 +52,50 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20">
-                  <h4 className="font-bold text-cyan-300 mb-2">Fluxo de Trabalho</h4>
+                  <h4 className="font-bold text-cyan-300 mb-2">Como funciona?</h4>
                   <p className="text-sm opacity-90 leading-relaxed">
-                    Enquanto você realiza a endoscopia e grava o vídeo (F9), clique no ícone do microfone no campo de "Achados". Vá descrevendo as estruturas em tempo real conforme as visualiza.
+                    Enquanto você realiza a endoscopia e grava o vídeo (F9), clique no ícone do microfone no campo de "Achados". Vá descrevendo as estruturas em tempo real.
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20">
-                  <h4 className="font-bold text-cyan-300 mb-2">Resultado Imediato</h4>
+                  <h4 className="font-bold text-cyan-300 mb-2">O Resultado</h4>
                   <p className="text-sm opacity-90 leading-relaxed">
-                    Ao terminar o procedimento e parar a gravação, a descrição textual já estará pronta. Basta um clique em "Refinar com IA" para formatar o laudo final em segundos.
+                    Ao terminar o exame e parar a gravação, a descrição textual já estará pronta. Basta um clique em "Refinar com IA" para finalizar o laudo em segundos.
                   </p>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Section: Formatação - O PODER DO NEGRITO */}
+          {/* Section: Formatação */}
           <section>
             <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
-              <Type className="text-blue-600" /> 1. O Poder do Negrito no Laudo
+              <Type className="text-blue-600" /> 1. O Poder do Negrito no Impresso
             </h3>
             <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
               <p className="text-slate-600 mb-6 leading-relaxed">
-                Para que seu laudo seja profissional e fácil de ler na impressão final, utilize a marcação de negrito no editor usando <strong>asteriscos duplos (**)</strong>.
+                Para que seu laudo seja profissional e fácil de ler na impressão, utilize a marcação de negrito para destacar termos importantes ou subtópicos.
               </p>
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">No Editor de Achados</h4>
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">No Editor</h4>
                   <div className="bg-slate-900 text-cyan-400 p-6 rounded-2xl font-mono text-sm shadow-inner">
                     **Septo Nasal:** Desvio para a esquerda.<br/>
                     **Cornetos:** Hipertróficos e pálidos.<br/>
-                    **Conclusão:** Rinite Alérgica Crônica.
+                    **Conclusão:** Rinite Alérgica.
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Visual na Impressão</h4>
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Na Impressão</h4>
                   <div className="bg-white border p-6 rounded-2xl text-slate-900 text-sm shadow-md italic">
                     <strong className="font-bold">Septo Nasal:</strong> Desvio para a esquerda.<br/>
                     <strong className="font-bold">Cornetos:</strong> Hipertróficos e pálidos.<br/>
-                    <strong className="font-bold">Conclusão:</strong> Rinite Alérgica Crônica.
+                    <strong className="font-bold">Conclusão:</strong> Rinite Alérgica.
                   </div>
                 </div>
               </div>
               <p className="mt-6 text-xs text-slate-500 font-medium italic">
-                Nota: A Inteligência Artificial preserva automaticamente todos os seus termos em negrito durante o refino.
+                Dica: A IA de refinamento preserva automaticamente todos os seus negritos.
               </p>
             </div>
           </section>
@@ -103,7 +103,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
           {/* Section: Captura */}
           <section>
             <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
-              <Camera className="text-blue-600" /> 2. Sistema de Captura HD
+              <Camera className="text-blue-600" /> 2. Captura Avançada
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:shadow-xl transition-all group">
@@ -112,7 +112,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                 </div>
                 <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Foto Digital (F8)</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Captura com Auto-Crop Inteligente. O sistema identifica a área circular do endoscópio e remove bordas pretas automaticamente.
+                  Captura com remoção automática de bordas pretas (Auto-Crop). O sistema foca no que importa: a imagem endoscópica.
                 </p>
               </div>
 
@@ -120,9 +120,9 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                 <div className="bg-red-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                   <Video size={24}/>
                 </div>
-                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Vídeo Nativo (F9)</h4>
+                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Vídeo HD (F9)</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Gravação direta para o HD. Toque curto para Pausar/Retomar. Mantenha pressionado por 1s para finalizar o vídeo.
+                  Gravação nativa. Clique curto para Pausar/Retomar. Segure por 1 segundo para finalizar e salvar automaticamente no HD.
                 </p>
               </div>
 
@@ -130,15 +130,15 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                 <div className="bg-amber-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
                   <Layers size={24}/>
                 </div>
-                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Modo Burst (Longo F8)</h4>
+                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Burst (Segurar F8)</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Sequência ultra-rápida de fotos (até 60fps). Use para criar Videokimografias detalhadas das pregas vocais no editor.
+                  Sequência de fotos em alta velocidade. Essencial para criar Videokimografias detalhadas no editor de mosaico.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Section: AI Refinement */}
+          {/* Section: AI & Reports */}
           <section>
             <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
               <Wand2 className="text-blue-600" /> 3. Inteligência Artificial
@@ -153,17 +153,17 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                   <Wand2 size={22} /> Refinador de Laudos
                 </h4>
                 <p className="text-sm text-slate-300 mb-6 leading-relaxed">
-                  Atua como um secretário acadêmico: transforma suas notas rápidas e abreviações em textos médicos elegantes e gramaticalmente perfeitos.
+                  Nossa IA não substitui o médico, ela atua como um secretário acadêmico. Ela entende abreviações médicas e as transforma em textos elegantes.
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
-                    <Check size={14} className="text-green-400" /> Corrige gramática e concordância
+                    <Check size={14} className="text-green-400" /> Melhora gramática e concordância
                   </div>
                   <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
                     <Check size={14} className="text-green-400" /> Expande termos técnicos
                   </div>
                   <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
-                    <Check size={14} className="text-green-400" /> Preserva seus marcadores de negrito
+                    <Check size={14} className="text-green-400" /> Mantém sua estrutura de tópicos
                   </div>
                 </div>
               </div>
@@ -173,7 +173,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                    <Mic size={22} className="text-red-500"/> Ditado Contínuo
                  </h4>
                  <p className="text-sm text-indigo-800 leading-relaxed mb-4">
-                   O sistema de ditado agora é <strong>Contínuo</strong>: ele não desliga sozinho em silêncios curtos.
+                   O sistema de ditado agora é <strong>Contínuo</strong>. Ele não desliga automaticamente.
                  </p>
                  <ul className="space-y-3 text-xs text-indigo-700 font-medium">
                    <li className="flex gap-2 items-start">
@@ -182,11 +182,11 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
                    </li>
                    <li className="flex gap-2 items-start">
                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></div>
-                     <span>O texto é inserido onde o cursor estiver posicionado.</span>
+                     <span>O sistema insere o texto onde o cursor estiver posicionado.</span>
                    </li>
                    <li className="flex gap-2 items-start">
                      <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></div>
-                     <span>Clique no ícone novamente para encerrar a escuta.</span>
+                     <span>Clique no botão novamente para encerrar a escuta.</span>
                    </li>
                  </ul>
               </div>
@@ -196,14 +196,14 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
           {/* Section: Shortcuts */}
           <section className="pb-10">
             <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
-              <Keyboard className="text-blue-600" /> Comandos de Teclado
+              <Keyboard className="text-blue-600" /> Comandos Rápidos
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                {[
                  { key: 'F8', action: 'Captura / Burst', color: 'border-blue-200 text-blue-600' },
                  { key: 'F9', action: 'Vídeo / Pausa', color: 'border-red-200 text-red-600' },
                  { key: 'F10', action: 'Tela Cheia', color: 'border-slate-200 text-slate-600' },
-                 { key: 'ESC', action: 'Fechar Modais', color: 'border-slate-200 text-slate-400' },
+                 { key: 'ESC', action: 'Fechar / Sair', color: 'border-slate-200 text-slate-400' },
                ].map((item) => (
                  <div key={item.key} className={`bg-white border-2 ${item.color} p-6 rounded-3xl text-center shadow-sm hover:scale-105 transition-transform`}>
                    <span className="block text-3xl font-black mb-1">{item.key}</span>
@@ -219,7 +219,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
         <div className="bg-slate-900 p-8 border-t border-white/5 flex justify-between items-center shrink-0 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-l from-blue-600/5 to-transparent pointer-events-none"></div>
           <div className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] relative z-10">
-             Desenvolvido para Excelência Clínica • v3.0
+             Desenvolvido para Excelência Clínica • 2024
           </div>
           <div className="flex gap-4 relative z-10">
             <button 
@@ -233,7 +233,7 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
               onClick={onClose}
               className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 rounded-2xl font-black text-xs tracking-[0.2em] transition-all uppercase shadow-[0_0_20px_rgba(34,211,238,0.3)]"
             >
-              Entendi, Vamos Começar
+              Começar Agora
             </button>
           </div>
         </div>
