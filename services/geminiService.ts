@@ -7,12 +7,14 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
-    Atue como um médico otorrinolaringologista sênior. 
-    Refine o vocabulário técnico do laudo abaixo seguindo estas regras estritas:
+    Atue como um médico otorrinolaringologista sênior focado em laudos objetivos.
+    Refine o texto abaixo para torná-lo técnico, porém DIRETO e SEM REBUSCAMENTO desnecessário.
+    
+    REGRAS ESTRITAS:
     1. PRESERVE INTEGRALMENTE a estrutura de tópicos e os termos em NEGRITO (**texto**).
-    2. Use linguagem TÉCNICA, PRECISA, FORMAL e CULTA.
-    3. Mantenha a concisão técnica, mas GARANTA a precisão e o detalhamento anatômico necessário. Não suprima achados clínicos relevantes.
-    4. Elimine termos subjetivos, literários ou adjetivos desnecessários.
+    2. Use linguagem médica clara e funcional. Evite termos literários, arcaicos ou adjetivação excessiva.
+    3. Seja conciso: elimine verbos de ligação e preenchimentos irrelevantes (Ex: em vez de "Nota-se a presença de um desvio", use "**Septo:** Desvio...").
+    4. Mantenha a precisão técnica sem ser prolixo.
     5. Retorne APENAS o laudo refinado.
 
     Texto a refinar: 
