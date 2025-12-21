@@ -26,15 +26,17 @@ const App: React.FC = () => {
   const [directoryHandle, setDirectoryHandle] = useState<FileSystemDirectoryHandle | null>(null);
   const [sessionDirectoryHandle, setSessionDirectoryHandle] = useState<FileSystemDirectoryHandle | null>(null);
   
-  const [patient, setPatient] = useState<PatientData>({
-    name: '', age: '', gender: '', performedBy: '', date: new Date().toLocaleDateString('pt-BR'),
+  const initialPatientState: PatientData = {
+    name: '', age: '', gender: '', performedBy: settings.doctorName || '', date: new Date().toLocaleDateString('pt-BR'),
     customValues: {}
-  });
+  };
 
-  const [report, setReport] = useState<ReportData>({
+  const initialReportState: ReportData = {
     examType: '', equipment: '', findings: '', conclusion: '', videoLink: ''
-  });
+  };
 
+  const [patient, setPatient] = useState<PatientData>(initialPatientState);
+  const [report, setReport] = useState<ReportData>(initialReportState);
   const [capturedImages, setCapturedImages] = useState<CapturedImage[]>([]);
   const [burstHistory, setBurstHistory] = useState<BurstSession[]>([]);
 
@@ -74,6 +76,20 @@ const App: React.FC = () => {
     }
   };
 
+  const handleNewReport = () => {
+    if (confirm("Deseja realmente descartar o laudo atual e iniciar um novo exame?")) {
+      setPatient({
+        ...initialPatientState,
+        performedBy: settings.doctorName || ''
+      });
+      setReport(initialReportState);
+      setCapturedImages([]);
+      setBurstHistory([]);
+      setSessionDirectoryHandle(null);
+      setIsPatientModalOpen(true);
+    }
+  };
+
   const saveSettings = (newSettings: DoctorSettings) => {
     setSettings(newSettings);
     localStorage.setItem('ent_settings', JSON.stringify(newSettings));
@@ -98,7 +114,7 @@ const App: React.FC = () => {
             return copy;
           })}
           onOpenSettings={() => setIsSettingsOpen(true)}
-          onNewReport={() => { if(confirm("Limpar laudo atual?")) window.location.reload(); }}
+          onNewReport={handleNewReport}
           onUpdateSettings={(s) => { setSettings(s); localStorage.setItem('ent_settings', JSON.stringify(s)); }}
           onOpenUserManual={() => setIsUserManualOpen(true)}
         />
