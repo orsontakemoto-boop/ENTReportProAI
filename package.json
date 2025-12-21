@@ -12,10 +12,11 @@
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.454.0",
+    "lucide-react": "^0.556.0",
     "@google/genai": "^1.31.0"
   },
   "devDependencies": {
+    "@types/node": "^22.10.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",

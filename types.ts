@@ -115,19 +115,14 @@ declare global {
     showDirectoryPicker: (options?: any) => Promise<FileSystemDirectoryHandle>;
   }
   var html2pdf: any;
-}
 
-// Solução para o erro de 'process is not defined' no runtime e TS2580
-export {};
-declare global {
+  // Augment the NodeJS namespace for global process.env
   namespace NodeJS {
     interface ProcessEnv {
       API_KEY: string;
     }
-    interface Process {
-      env: ProcessEnv;
-    }
   }
-  // Fix: Removed redundant 'var process' which caused "Cannot redeclare block-scoped variable 'process'".
-  // Environment variables are handled via 'process.env' as augmented in the NodeJS namespace above.
 }
+
+// Ensure the file is a module
+export {};
