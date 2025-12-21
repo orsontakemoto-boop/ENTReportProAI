@@ -78,6 +78,7 @@ export const DEFAULT_SETTINGS = {
   logoPosition: 'left',
   logoSize: 'medium',
   themeColor: 'blue',
+  printFontSize: 100, // 100% como padrão
   signaturePosition: 'center', // Posição padrão da assinatura
   signatureStyle: null, // Novo campo para estilo livre da assinatura
   

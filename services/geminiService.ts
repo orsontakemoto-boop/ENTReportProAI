@@ -1,41 +1,27 @@
 
-import { GoogleGenAI } from "@google/genai";
-
-// API key is obtained directly from process.env.API_KEY per instructions.
+// Use correct import for GoogleGenAI and response types
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 export const refineTextWithAI = async (text: string): Promise<string> => {
-  if (!text.trim()) {
-    throw new Error("Texto vazio.");
-  }
-
-  // Always use a new instance with direct process.env.API_KEY access
+  if (!text.trim()) throw new Error("Texto vazio.");
+  // Always initialize with an options object containing apiKey
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
     Atue como um médico otorrinolaringologista sênior e acadêmico.
-    Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
-    
-    DIRETRIZES OBRIGATÓRIAS:
-    1. **PRESERVE O NEGRITO**: Mantenha estritamente todas as marcações de negrito (**texto**) que envolvem os rótulos anatômicos iniciais. Jamais remova os asteriscos duplos.
-    2. **APENAS O CONTEÚDO**: Retorne estritamente o texto refinado. Não adicione introduções ou explicações.
-    3. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado em lista vertical, respeitando a estrutura de parágrafos original.
-    4. **REFINAMENTO MÉDICO**: Melhore as descrições técnicas que seguem os rótulos em negrito, utilizando terminologia formal e precisa.
-    
-    Exemplo:
-    Entrada: "**Septo Nasal:** torto pra direita"
-    Saída: "**Septo Nasal:** Desvio septal cartilaginoso para a direita, com esporão ósseo associado."
-
-    Texto original para refinar:
-    "${text}"
+    Refine o vocabulário técnico do laudo abaixo.
+    1. PRESERVE O NEGRITO (**texto**).
+    2. Retorne apenas o texto refinado em tópicos.
+    Texto: "${text}"
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    // Basic text tasks like summarization and proofreading use gemini-3-flash-preview
+    const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
-    
-    // Accessing .text property directly as per guidelines
+    // Access generated text via the .text property (not a method)
     return response.text?.trim() || text;
   } catch (error) {
     console.error("Gemini Error:", error);
@@ -44,84 +30,50 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
 };
 
 export const generateConclusionWithAI = async (findings: string): Promise<string> => {
-  if (!findings.trim()) {
-    throw new Error("A descrição do exame está vazia. Descreva os achados primeiro.");
-  }
-
+  if (!findings.trim()) throw new Error("Achados vazios.");
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
-    Atue como um médico otorrinolaringologista sênior. 
-    Analise a descrição dos achados endoscópicos abaixo e forneça uma "Conclusão" ou "Hipótese Diagnóstica" precisa e concisa.
-    
-    DIRETRIZES:
-    1. Use terminologia médica formal.
-    2. Seja direto: forneça apenas os diagnósticos encontrados.
-    3. Inicie com o rótulo em negrito: "**Exame compatível com:**" ou "**Hipótese Diagnóstica:**".
-    4. **NÃO ADICIONE INTRODUÇÃO**: Responda apenas com o texto da conclusão.
-    
-    Achados descritos:
-    "${findings}"
+    Atue como um médico otorrinolaringologista sênior.
+    Forneça uma conclusão médica concisa em negrito baseada nestes achados: "${findings}"
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+    // Complex text tasks involving medical reasoning use gemini-3-pro-preview
+    const response: GenerateContentResponse = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
       contents: prompt,
     });
-    
-    // Accessing .text property directly
+    // Access generated text via the .text property
     return response.text?.trim() || "";
   } catch (error) {
-    console.error("Gemini Conclusion Error:", error);
-    throw new Error("Falha ao gerar conclusão automática.");
+    console.error("Gemini Error:", error);
+    throw new Error("Erro na IA.");
   }
 };
 
 export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<string> => {
-  if (!base64ImageUrl) {
-     throw new Error("Imagem inválida.");
-  }
-
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
-    throw new Error("Formato de imagem inválido.");
-  }
-  const mimeType = matches[1];
-  const base64Data = matches[2];
-
-  const prompt = `
-    Esta é uma imagem de endoscopia de fibra óptica. Restaure-a para alta definição, 
-    eliminando o efeito de mosaico das fibras e melhorando a nitidez da mucosa e vasos sanguíneos.
-  `;
-
+  if (!matches) throw new Error("Imagem inválida.");
+  
   try {
-    const response = await ai.models.generateContent({
+    // Image generation and editing tasks use gemini-2.5-flash-image
+    const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
-          { inlineData: { mimeType: mimeType, data: base64Data } },
-          { text: prompt }
+          { inlineData: { mimeType: matches[1], data: matches[2] } },
+          { text: "Restaure esta imagem de endoscopia removendo o efeito mosaico das fibras." }
         ]
       }
     });
-
-    const candidate = response.candidates?.[0];
-    const parts = candidate?.content?.parts;
-
-    // Iterating through all parts to find the inlineData part containing the processed image
-    if (parts) {
-      for (const part of parts) {
-        if (part.inlineData && part.inlineData.data) {
-          return `data:image/png;base64,${part.inlineData.data}`;
-        }
-      }
-    }
-    throw new Error("A IA não retornou uma imagem válida.");
+    // Iterate through parts to find the image part in response candidates
+    const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    if (part?.inlineData?.data) return `data:image/png;base64,${part.inlineData.data}`;
+    throw new Error("Sem retorno de imagem.");
   } catch (error) {
-    console.error("Gemini Image Enhancement Error:", error);
-    throw new Error("Falha ao aprimorar a imagem.");
+    console.error("Gemini Error:", error);
+    throw new Error("Falha no processamento de imagem.");
   }
 };

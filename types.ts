@@ -10,22 +10,17 @@ export interface DoctorSettings {
   logoBase64: string | null;
   signatureBase64: string | null;
   
-  // Imagens da Landing Page (Novos campos)
   landingHeroImage: string | null;
   landingShowcaseImage: string | null;
 
   savedEquipments: string[];
   photosGridColumns: number;
-  burstSpeed: number; // Novas fotos por segundo (1-60)
-  autoCropEnabled: boolean; // Novo campo para controlar o recorte automático
+  burstSpeed: number;
+  autoCropEnabled: boolean;
   
-  // Custom Templates
   customTemplates: CustomTemplate[];
-
-  // Novos Tipos de Exame Criados pelo Usuário
   customExamTypes: Record<string, ExamTemplate>;
 
-  // Personalização de Campos do Paciente
   visiblePatientFields: {
     document: boolean;
     profession: boolean;
@@ -34,26 +29,23 @@ export interface DoctorSettings {
     indicatedBy: boolean;
     requestedBy: boolean;
   };
-  customPatientFields: string[]; // Lista de rótulos ex: ["Religião", "Cor", "Estado Civil"]
+  customPatientFields: string[];
 
-  // Câmera Única (Campo mantido para compatibilidade, mas não usado na UI)
   selectedCameraId: string;
   
-  // Personalização Visual
   fontFamily: 'Century Gothic' | 'Inter' | 'Roboto' | 'Playfair Display' | 'Lato' | 'System Sans' | 'System Serif';
   logoPosition: 'left' | 'right' | 'center';
   logoSize: 'small' | 'medium' | 'large';
   themeColor: 'blue' | 'teal' | 'slate' | 'black';
-  signaturePosition: 'left' | 'center' | 'right'; // Nova opção de posição da assinatura
+  signaturePosition: 'left' | 'center' | 'right';
+  printFontSize: number; 
   
-  // Estilo livre da assinatura (X, Y, Width)
   signatureStyle: {
     x: number;
     y: number;
     width: number;
   } | null;
 
-  // Atalhos
   photoShortcut: string;
   recordShortcut: string;
   fullscreenShortcut: string;
@@ -63,7 +55,7 @@ export interface CustomTemplate {
   id: string;
   name: string;
   content: string;
-  examType: string; // Para vincular o template ao tipo de exame (nasofibro, laringo, etc)
+  examType: string;
 }
 
 export interface PatientData {
@@ -71,16 +63,13 @@ export interface PatientData {
   age: string;
   gender: 'M' | 'F' | 'Outro' | '';
   date: string;
-  performedBy: string; // Novo campo: Exame realizado por
-  // Campos opcionais padrão
-  document?: string; // RG ou CPF
+  performedBy: string;
+  document?: string;
   profession?: string;
-  insurance?: string; // Convênio
+  insurance?: string;
   address?: string;
-  indicatedBy?: string; // Referenciado por
-  requestedBy?: string; // Solicitado por
-  
-  // Valores para campos personalizados dinâmicos
+  indicatedBy?: string;
+  requestedBy?: string;
   customValues: Record<string, string>;
 }
 
@@ -97,11 +86,11 @@ export interface CapturedImage {
   url: string;
   timestamp: number;
   type?: 'regular' | 'mosaic';
-  customWidth?: number; // porcentagem 10-100
-  customHeight?: number; // pixels
-  originalUrl?: string; // URL da imagem original (antes da IA)
-  isAiEnhanced?: boolean; // Flag para identificar se a imagem foi tratada pela IA
-  caption?: string; // Nova legenda opcional
+  customWidth?: number;
+  customHeight?: number;
+  originalUrl?: string;
+  isAiEnhanced?: boolean;
+  caption?: string;
 }
 
 export interface ExamTemplate {
@@ -118,7 +107,6 @@ export interface BurstSession {
   count: number;
 }
 
-// Extend Window interface for Speech API and File System Access API
 declare global {
   interface Window {
     webkitSpeechRecognition: any;
@@ -127,4 +115,19 @@ declare global {
     showDirectoryPicker: (options?: any) => Promise<FileSystemDirectoryHandle>;
   }
   var html2pdf: any;
+}
+
+// Solução para o erro de 'process is not defined' no runtime e TS2580
+export {};
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      API_KEY: string;
+    }
+    interface Process {
+      env: ProcessEnv;
+    }
+  }
+  // Fix: Removed redundant 'var process' which caused "Cannot redeclare block-scoped variable 'process'".
+  // Environment variables are handled via 'process.env' as augmented in the NodeJS namespace above.
 }

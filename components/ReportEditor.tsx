@@ -315,7 +315,11 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const getExamLabel = () => { const tpl = availableExams[report.examType]; return tpl ? tpl.label : "LAUDO VIDEO-ENDOSCÓPICO"; };
 
   return (
-    <div ref={editorContainerRef} className={`${fontClass} font-content-wrapper h-full bg-white overflow-y-auto flex justify-center no-scrollbar relative print:h-auto print:overflow-visible print:block print:static print:bg-white`}>
+    <div 
+      ref={editorContainerRef} 
+      className={`${fontClass} font-content-wrapper h-full bg-white overflow-y-auto flex justify-center no-scrollbar relative print:h-auto print:overflow-visible print:block print:static print:bg-white`}
+      style={{ fontSize: (settings.printFontSize || 100) + '%' }}
+    >
       <div className="fixed top-4 left-4 flex gap-2 no-print z-40">
           <button onClick={onNewReport} className="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-500 border-2 border-white" title="Novo Exame"><FilePlus size={20} /></button>
           <button onClick={onOpenSettings} className="bg-slate-800 text-white p-3 rounded-full shadow-lg hover:bg-slate-700 border-2 border-white" title="Configurações"><SettingsIcon size={20} /></button>
