@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move, BrainCircuit, Type } from 'lucide-react';
+import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move, BrainCircuit, Type, Info } from 'lucide-react';
 import { DoctorSettings, PatientData, ReportData, CapturedImage, CustomTemplate, ExamTemplate } from '../types';
 import { EXAM_TEMPLATES } from '../constants';
 import { refineTextWithAI, enhanceMedicalImage, generateConclusionWithAI } from '../services/geminiService';
@@ -567,6 +567,11 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
             <div className="hidden print:block p-0 text-sm leading-relaxed min-h-[1em]">
               {renderFormattedText(report.findings)}
             </div>
+          </div>
+          
+          <div className="mt-1 flex items-center gap-1.5 text-slate-400 no-print">
+            <Info size={12} />
+            <span className="text-[10px] font-medium italic">Dica: Termos entre asteriscos duplos (ex: **termo**) serão exibidos em negrito na impressão.</span>
           </div>
           
           <div className="mt-3 flex justify-end no-print">

@@ -30,11 +30,15 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
     Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
     
     DIRETRIZES OBRIGATÓRIAS:
-    1. **APENAS O CONTEÚDO**: Retorne estritamente o texto refinado. Não adicione introduções, saudações, explicações ou textos como "Como médico sênior..." ou "Aqui está o seu laudo".
-    2. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
-    3. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
-    4. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
+    1. **PRESERVE O NEGRITO**: Mantenha estritamente todas as marcações de negrito (**texto**) que envolvem os rótulos anatômicos iniciais. Jamais remova os asteriscos duplos.
+    2. **APENAS O CONTEÚDO**: Retorne estritamente o texto refinado. Não adicione introduções ou explicações.
+    3. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado em lista vertical, respeitando a estrutura de parágrafos original.
+    4. **REFINAMENTO MÉDICO**: Melhore as descrições técnicas que seguem os rótulos em negrito, utilizando terminologia formal e precisa.
     
+    Exemplo:
+    Entrada: "**Septo Nasal:** torto pra direita"
+    Saída: "**Septo Nasal:** Desvio septal cartilaginoso para a direita, com esporão ósseo associado."
+
     Texto original para refinar:
     "${text}"
   `;
@@ -65,17 +69,13 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
     Analise a descrição dos achados endoscópicos abaixo e forneça uma "Conclusão" ou "Hipótese Diagnóstica" precisa e concisa.
     
     DIRETRIZES:
-    1. Use terminologia médica formal (ex: em vez de 'carne no nariz', use 'hipertrofia de cornetos' ou 'adenoides').
-    2. Se houver sinais de refluxo, mencione 'Sinais sugestivos de refluxo laringofaríngeo'.
-    3. Se houver desvio de septo, classifique-o se possível.
-    4. Seja direto: forneça apenas os diagnósticos encontrados.
-    5. Inicie com "Exame compatível com:" ou "Hipótese Diagnóstica:".
-    6. **NÃO ADICIONE INTRODUÇÃO**: Responda apenas com o texto da conclusão.
+    1. Use terminologia médica formal.
+    2. Seja direto: forneça apenas os diagnósticos encontrados.
+    3. Inicie com o rótulo em negrito: "**Exame compatível com:**" ou "**Hipótese Diagnóstica:**".
+    4. **NÃO ADICIONE INTRODUÇÃO**: Responda apenas com o texto da conclusão.
     
     Achados descritos:
     "${findings}"
-    
-    Responda apenas com o texto da conclusão.
   `;
 
   try {
