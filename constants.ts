@@ -11,31 +11,31 @@ export const EXAM_TEMPLATES: Record<string, ExamTemplate> = {
     label: "Vídeo-nasofibrolaringoscopia",
     equipment: "Nasofibroscópio flexível de 3.2mm.",
     findings: "**Vestíbulos nasais:** \n**Septo Nasal:** \n**Conchas Inferiores:** \n**Meatos Médios:** \n**Conchas Médias:** \n**Rinofaringe:** \n**Orofaringe:** \n**Base de Língua e Valéculas:** \n**Hipofaringe / Seios Piriformes:** \n**Laringe (Epiglote e Aritenoides):** \n**Pregas Vocais:** \n**Mobilidade Laringea:** ",
-    conclusion: "**Exame compatível com:** "
+    conclusion: "Exame compatível com:"
   },
   laringo: {
     label: "Vídeo-laringo-estroboscopia",
     equipment: "Telelaringoscópio rígido de 70 graus + Fonte de Luz Estroboscópica.",
     findings: "**Orofaringe / Base de Língua:** \n**Valéculas e Seios Piriformes:** \n**Laringe Supraglótica:** \n**Pregas Vocais (Morfologia):** \n**Fenda Glótica:** \n**Mobilidade das Pregas Vocais:** \n**Onda Mucosa (Estroboscopia):** \n**Simetria e Periodicidade:** ",
-    conclusion: "**Exame compatível com:** "
+    conclusion: "Exame compatível com:"
   },
   nasossinusal: {
     label: "Vídeo-endoscopia Nasossinusal",
     equipment: "Ótica rígida de 0 e 30 graus.",
     findings: "**Vestíbulos Nasais:** \n**Septo Nasal:** \n**Cornetos Inferiores:** \n**Cornetos Médios:** \n**Meatos Médios:** \n**Recessos Esfenoetmoidais:** \n**Secreção / Drenagem:** \n**Lesões / Pólipos:** ",
-    conclusion: "**Exame compatível com:** "
+    conclusion: "Exame compatível com:"
   },
   degluticao: {
     label: "Vídeo-endoscopia da Deglutição (FEES)",
     equipment: "Nasofibroscópio flexível + Protocolo de alimentos corados.",
     findings: "**Anatomia e Sensibilidade:** \n**Controle Oral do Bolo:** \n**Disparo do Reflexo de Deglutição:** \n**Resíduos (Estase) em Valéculas:** \n**Resíduos (Estase) em Seios Piriformes:** \n**Penetração Laríngea:** \n**Aspiração Traqueal:** \n**Eficácia da Tosse/Limpeza:** ",
-    conclusion: "**Deglutição funcional caracterizada por:** "
+    conclusion: "Deglutição funcional caracterizada por:"
   },
   veu: {
     label: "Vídeo-endoscopia do Esfíncter Velo-palatino",
     equipment: "Nasofibroscópio flexível.",
     findings: "**Morfologia do Palato Mole:** \n**Mobilidade do Véu:** \n**Fechamento Velofaríngeo (Fonação):** \n**Passavant:** \n**Fuga Nasal de Ar:** ",
-    conclusion: "**Esfíncter velofaríngeo:** "
+    conclusion: "Esfíncter velofaríngeo:"
   }
 };
 
