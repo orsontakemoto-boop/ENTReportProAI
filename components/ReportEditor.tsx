@@ -204,12 +204,12 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const handleSaveNewExam = () => { 
     if (!newExamData.label.trim()) return alert("Nome obrigatório"); 
     const key = newExamData.label.toLowerCase().replace(/[^a-z0-9]/g, '_'); 
-    if (availableExams[key]) return alert("Já existe"); 
+    if (availableExams[key]) return alert("Já existe um exame com este nome."); 
     const updatedSettings = { ...settings, customExamTypes: { ...(settings.customExamTypes || {}), [key]: { label: newExamData.label, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion } } }; 
     onUpdateSettings(updatedSettings); 
     setReport({ ...report, examType: key, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion }); 
     setShowNewExamModal(false); 
-    alert("Salvo!"); 
+    setNewExamData({ label: '', equipment: '', findings: '', conclusion: '', key: '' });
   };
 
   const handleSaveTemplate = () => { 
@@ -226,7 +226,6 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
 
   const currentExamTemplates = (settings.customTemplates || []).filter(t => t.examType === report.examType || t.examType === '');
 
-  // --- SISTEMA DE DITADO CORRIGIDO (DITADO CONTÍNUO) ---
   const stopDictation = () => {
     if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -239,32 +238,27 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return alert("Seu navegador não suporta reconhecimento de voz.");
 
-    // Se já estiver ouvindo o mesmo campo, para.
     if (isListening === field) {
         stopDictation();
         return;
     }
 
-    // Se estiver ouvindo outro campo, para o anterior primeiro.
     if (isListening) stopDictation();
 
     const recognition = new SpeechRecognition();
     recognition.lang = 'pt-BR';
-    recognition.continuous = true; // Mantém a gravação contínua
+    recognition.continuous = true; 
     recognition.interimResults = false;
     recognitionRef.current = recognition;
 
     recognition.onstart = () => {
       setIsListening(field);
-      
-      recognition.onend = () => {
-        setIsListening(null);
-      };
+      recognition.onend = () => { setIsListening(null); };
     };
 
     recognition.onerror = (event: any) => {
       console.error("Speech error:", event.error);
-      if (event.error === 'not-allowed') alert("Permissão de microfone negada. Verifique as configurações do seu navegador.");
+      if (event.error === 'not-allowed') alert("Permissão de microfone negada.");
       stopDictation();
     };
 
@@ -280,8 +274,6 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           const prefix = (start > 0 && currentText[start - 1] !== ' ' && currentText[start - 1] !== '\n') ? ' ' : '';
           const newText = currentText.substring(0, start) + prefix + transcript + currentText.substring(end);
           setReport(prev => ({ ...prev, [field]: newText }));
-          
-          // Mantém o cursor após o texto inserido após o render
           setTimeout(() => {
             textarea.focus();
             const newPos = start + prefix.length + transcript.length;
@@ -442,6 +434,60 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
           {mosaicImages.length > 0 && (<div className={`mt-8 w-full block ${(!regularImages.length && !qrCodeUrl) ? 'page-break break-before-page' : ''}`}><div className="flex justify-between items-center mb-4 border-b pb-2"><h3 className={`text-sm font-bold uppercase ${colors.text}`}>Mosaico e Videokimografia Digital</h3></div><div className="mb-6 space-y-6">{mosaicImages.map((img) => (<MosaicResizableImage key={img.id} img={img} onUpdate={onUpdateImage} onRemove={onRemoveImage} />))}</div></div>)}
         </div>
       </div>
+
+      {/* --- MODAIS DE SUPORTE --- */}
+      
+      {/* Modal: Criar Novo Tipo de Exame */}
+      {showNewExamModal && (
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+             <div className="bg-blue-700 p-4 text-white flex justify-between items-center">
+               <h3 className="font-bold flex items-center gap-2"><FilePlus size={20}/> Criar Novo Tipo de Exame</h3>
+               <button onClick={() => setShowNewExamModal(false)} className="hover:bg-white/20 p-1 rounded-full"><X size={20}/></button>
+             </div>
+             <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nome do Exame</label>
+                  <input type="text" value={newExamData.label} onChange={e => setNewExamData({...newExamData, label: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Vídeo-Estroboscopia Digital" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Equipamento Padrão</label>
+                  <input type="text" value={newExamData.equipment} onChange={e => setNewExamData({...newExamData, equipment: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Ótica rígida de 70 graus..." />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Esqueleto de Achados (Findings)</label>
+                  <textarea value={newExamData.findings} onChange={e => setNewExamData({...newExamData, findings: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors h-32 resize-none" placeholder="**Anatomia:** \n**Mobilidade:** ..." />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Conclusão Padrão</label>
+                  <input type="text" value={newExamData.conclusion} onChange={e => setNewExamData({...newExamData, conclusion: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: **Exame compatível com:** " />
+                </div>
+             </div>
+             <div className="bg-slate-50 p-4 flex justify-end gap-3">
+                <button onClick={() => setShowNewExamModal(false)} className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancelar</button>
+                <button onClick={handleSaveNewExam} className="bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-blue-800 flex items-center gap-2 transition-all"><Save size={18}/> Salvar e Usar</button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: LaringoAI Link */}
+      {showLaringoModal && (
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+             <div className="p-6 text-center">
+                <div className="bg-blue-50 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-blue-100"><Bot size={32}/></div>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">Análise com LaringoAI?</h3>
+                <p className="text-sm text-slate-500 leading-relaxed mb-6">Deseja abrir o analisador externo especializado para este exame de laringe?</p>
+                <div className="flex flex-col gap-3">
+                   <button onClick={openLaringoAI} className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-800 flex items-center justify-center gap-2 transition-all"><ExternalLink size={18}/> Abrir LaringoAI Analyzer</button>
+                   <button onClick={() => setShowLaringoModal(false)} className="text-slate-400 text-sm font-bold hover:text-slate-600 transition-colors">Agora não</button>
+                </div>
+             </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
