@@ -1,29 +1,15 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-declare const process: any;
-
-const getApiKey = () => {
-  let apiKey = '';
-  try {
-     apiKey = process.env.API_KEY;
-  } catch (e) {
-     console.warn("process.env.API_KEY não acessível diretamente.", e);
-  }
-
-  if (!apiKey) {
-    throw new Error("API Key do Google Gemini não configurada.");
-  }
-  return apiKey;
-};
+// API key is obtained directly from process.env.API_KEY per instructions.
 
 export const refineTextWithAI = async (text: string): Promise<string> => {
-  const apiKey = getApiKey();
   if (!text.trim()) {
     throw new Error("Texto vazio.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  // Always use a new instance with direct process.env.API_KEY access
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
     Atue como um médico otorrinolaringologista sênior e acadêmico.
@@ -49,6 +35,7 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
       contents: prompt,
     });
     
+    // Accessing .text property directly as per guidelines
     return response.text?.trim() || text;
   } catch (error) {
     console.error("Gemini Error:", error);
@@ -57,12 +44,11 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
 };
 
 export const generateConclusionWithAI = async (findings: string): Promise<string> => {
-  const apiKey = getApiKey();
   if (!findings.trim()) {
     throw new Error("A descrição do exame está vazia. Descreva os achados primeiro.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
     Atue como um médico otorrinolaringologista sênior. 
@@ -84,6 +70,7 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
       contents: prompt,
     });
     
+    // Accessing .text property directly
     return response.text?.trim() || "";
   } catch (error) {
     console.error("Gemini Conclusion Error:", error);
@@ -92,12 +79,11 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
 };
 
 export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<string> => {
-  const apiKey = getApiKey();
-  const ai = new GoogleGenAI({ apiKey: apiKey });
-
   if (!base64ImageUrl) {
      throw new Error("Imagem inválida.");
   }
+
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
   if (!matches || matches.length !== 3) {
@@ -125,6 +111,7 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts;
 
+    // Iterating through all parts to find the inlineData part containing the processed image
     if (parts) {
       for (const part of parts) {
         if (part.inlineData && part.inlineData.data) {

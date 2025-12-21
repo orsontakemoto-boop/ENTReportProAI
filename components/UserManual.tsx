@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Camera, Mic, Wand2, FileText, Settings, Video, Download, Printer, Layers, Crop, Keyboard, Activity, Sparkles, FileCheck, AlertTriangle, ScanFace } from 'lucide-react';
+import { X, Camera, Mic, Wand2, FileText, Settings, Video, Download, Printer, Layers, Crop, Keyboard, Activity, Sparkles, FileCheck, AlertTriangle, ScanFace, Zap, Type, Check } from 'lucide-react';
 
 interface UserManualProps {
   isOpen: boolean;
@@ -11,259 +11,229 @@ const UserManual: React.FC<UserManualProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-900/95 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-slate-900/95 z-[100] flex items-center justify-center p-4 backdrop-blur-md animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-5xl h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-white/20">
         
-        {/* Header */}
-        <div className="bg-slate-800 text-white p-6 flex justify-between items-center shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="bg-amber-500 p-2 rounded-lg">
-              <Activity size={24} />
+        {/* Header - Spielberg Style */}
+        <div className="bg-[#020617] text-white p-8 flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent pointer-events-none"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="bg-gradient-to-br from-cyan-400 to-blue-600 p-3 rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+              <Activity size={28} className="text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Manual do Usuário</h2>
-              <p className="text-slate-400 text-sm">ENT Report Pro AI</p>
+              <h2 className="text-3xl font-black tracking-tight uppercase">Manual do <span className="text-cyan-400">Usuário</span></h2>
+              <p className="text-slate-400 text-xs font-bold tracking-[0.3em] uppercase opacity-70">ENT Report Pro AI • v3.0</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="bg-slate-700 hover:bg-slate-600 p-2 rounded-full transition-colors"
+            className="bg-white/5 hover:bg-white/10 p-3 rounded-full transition-all border border-white/10 group"
           >
-            <X size={24} />
+            <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
           </button>
         </div>
 
         {/* Content Scrollable */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-12 bg-slate-50">
+        <div className="flex-1 overflow-y-auto p-10 space-y-16 bg-slate-50/50 thin-scrollbar">
           
-          {/* Section 1: Workflow */}
-          <section>
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-2 border-slate-200">
-              <Settings className="text-blue-600" /> 1. Configuração Inicial
-            </h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h4 className="font-bold text-slate-800 mb-2">Dados e Armazenamento</h4>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">
-                  Antes de começar, clique na engrenagem (Configurações). É <b>obrigatório</b> selecionar uma pasta local para salvar os vídeos.
-                </p>
-                <ul className="space-y-2 text-sm text-slate-600">
-                  <li className="flex items-center gap-2"><span className="bg-blue-100 text-blue-800 text-xs px-2 rounded">Passo 1</span> Selecione a pasta de destino.</li>
-                  <li className="flex items-center gap-2"><span className="bg-blue-100 text-blue-800 text-xs px-2 rounded">Passo 2</span> Carregue seu logotipo e assinatura.</li>
-                  <li className="flex items-center gap-2"><span className="bg-blue-100 text-blue-800 text-xs px-2 rounded">Passo 3</span> Configure cores, fontes e layout.</li>
-                </ul>
+          {/* SECTION: SUPER DICA DE PRODUTIVIDADE - DITADO SIMULTÂNEO */}
+          <section className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
+              <Zap size={120} />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-2xl font-black mb-4 flex items-center gap-3 uppercase tracking-wider">
+                <Zap className="text-cyan-300 animate-pulse" /> 
+                Dica de Ouro: Exame "Mãos Livres"
+              </h3>
+              <p className="text-blue-50 text-lg leading-relaxed mb-6 max-w-3xl">
+                Otimize seu tempo ao máximo: <strong>Ligue o microfone de ditado simultaneamente à gravação do exame.</strong>
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20">
+                  <h4 className="font-bold text-cyan-300 mb-2">Fluxo de Trabalho</h4>
+                  <p className="text-sm opacity-90 leading-relaxed">
+                    Enquanto você realiza a endoscopia e grava o vídeo (F9), clique no ícone do microfone no campo de "Achados". Vá descrevendo as estruturas em tempo real conforme as visualiza.
+                  </p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20">
+                  <h4 className="font-bold text-cyan-300 mb-2">Resultado Imediato</h4>
+                  <p className="text-sm opacity-90 leading-relaxed">
+                    Ao terminar o procedimento e parar a gravação, a descrição textual já estará pronta. Basta um clique em "Refinar com IA" para formatar o laudo final em segundos.
+                  </p>
+                </div>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                <h4 className="font-bold text-slate-800 mb-2">Segurança Local</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Este sistema segue o princípio <i>Local-First</i>. Seus vídeos e dados de pacientes <b>nunca</b> são enviados para a nuvem. Tudo fica salvo no seu HD, na pasta que você escolheu.
+            </div>
+          </section>
+
+          {/* Section: Formatação - O PODER DO NEGRITO */}
+          <section>
+            <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
+              <Type className="text-blue-600" /> 1. O Poder do Negrito no Laudo
+            </h3>
+            <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200">
+              <p className="text-slate-600 mb-6 leading-relaxed">
+                Para que seu laudo seja profissional e fácil de ler na impressão final, utilize a marcação de negrito no editor usando <strong>asteriscos duplos (**)</strong>.
+              </p>
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">No Editor de Achados</h4>
+                  <div className="bg-slate-900 text-cyan-400 p-6 rounded-2xl font-mono text-sm shadow-inner">
+                    **Septo Nasal:** Desvio para a esquerda.<br/>
+                    **Cornetos:** Hipertróficos e pálidos.<br/>
+                    **Conclusão:** Rinite Alérgica Crônica.
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Visual na Impressão</h4>
+                  <div className="bg-white border p-6 rounded-2xl text-slate-900 text-sm shadow-md italic">
+                    <strong className="font-bold">Septo Nasal:</strong> Desvio para a esquerda.<br/>
+                    <strong className="font-bold">Cornetos:</strong> Hipertróficos e pálidos.<br/>
+                    <strong className="font-bold">Conclusão:</strong> Rinite Alérgica Crônica.
+                  </div>
+                </div>
+              </div>
+              <p className="mt-6 text-xs text-slate-500 font-medium italic">
+                Nota: A Inteligência Artificial preserva automaticamente todos os seus termos em negrito durante o refino.
+              </p>
+            </div>
+          </section>
+
+          {/* Section: Captura */}
+          <section>
+            <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
+              <Camera className="text-blue-600" /> 2. Sistema de Captura HD
+            </h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:shadow-xl transition-all group">
+                <div className="bg-blue-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Camera size={24}/>
+                </div>
+                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Foto Digital (F8)</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Captura com Auto-Crop Inteligente. O sistema identifica a área circular do endoscópio e remove bordas pretas automaticamente.
+                </p>
+              </div>
+
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:shadow-xl transition-all group">
+                <div className="bg-red-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Video size={24}/>
+                </div>
+                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Vídeo Nativo (F9)</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Gravação direta para o HD. Toque curto para Pausar/Retomar. Mantenha pressionado por 1s para finalizar o vídeo.
+                </p>
+              </div>
+
+              <div className="bg-white p-6 rounded-3xl border border-slate-200 hover:shadow-xl transition-all group">
+                <div className="bg-amber-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                  <Layers size={24}/>
+                </div>
+                <h4 className="font-black text-slate-800 mb-2 uppercase text-sm tracking-tighter">Modo Burst (Longo F8)</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Sequência ultra-rápida de fotos (até 60fps). Use para criar Videokimografias detalhadas das pregas vocais no editor.
                 </p>
               </div>
             </div>
           </section>
 
-          {/* Section 2: Capture */}
+          {/* Section: AI Refinement */}
           <section>
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-2 border-slate-200">
-              <Camera className="text-blue-600" /> 2. Captura de Imagem e Vídeo
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-300 transition-colors">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-blue-600 text-white p-2 rounded-lg"><Camera size={20}/></div>
-                  <span className="font-bold text-slate-800">Foto Única (F8)</span>
-                </div>
-                <p className="text-xs text-slate-500">
-                  Captura instantânea. O sistema aplica recorte automático (Auto-Crop) para remover bordas pretas circulares do endoscópio.
-                </p>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 hover:border-red-300 transition-colors">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-red-600 text-white p-2 rounded-lg"><Video size={20}/></div>
-                  <span className="font-bold text-slate-800">Vídeo (F9)</span>
-                </div>
-                <p className="text-xs text-slate-500">
-                  Grava vídeo HD com áudio. O arquivo é salvo automaticamente no disco ao parar. Clique curto pausa/retoma, clique longo para.
-                </p>
-              </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 hover:border-amber-300 transition-colors">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-amber-500 text-white p-2 rounded-lg"><Layers size={20}/></div>
-                  <span className="font-bold text-slate-800">Burst (Segurar F8)</span>
-                </div>
-                <p className="text-xs text-slate-500">
-                  Captura sequencial de alta velocidade (até 60fps). Cria uma subpasta com todas as fotos. Ideal para estroboscopia.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 3: AI & Reports */}
-          <section>
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-2 border-slate-200">
-              <Wand2 className="text-blue-600" /> 3. Inteligência Artificial e Laudos
+            <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
+              <Wand2 className="text-blue-600" /> 3. Inteligência Artificial
             </h3>
             
-            <div className="grid lg:grid-cols-2 gap-6 mb-8">
-              {/* REFINAMENTO DE TEXTO */}
-              <div className="bg-violet-50 p-6 rounded-xl border border-violet-100">
-                <h4 className="font-bold text-violet-900 flex items-center gap-2 mb-3">
-                  <Wand2 size={18} /> Refinamento de Texto (Gemini)
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-6 opacity-20">
+                   <Sparkles size={60} className="text-cyan-400" />
+                </div>
+                <h4 className="font-black text-xl mb-4 flex items-center gap-2 text-cyan-400 uppercase tracking-tighter">
+                  <Wand2 size={22} /> Refinador de Laudos
                 </h4>
-                <p className="text-sm text-violet-800 mb-4">
-                  Digite tópicos rápidos e soltos no campo de achados (ex: "septo desvio dir, cornetos hipertrofia"). 
-                  Clique em <b>"Refinar com IA"</b> e o sistema reescreverá tudo em linguagem médica formal.
+                <p className="text-sm text-slate-300 mb-6 leading-relaxed">
+                  Atua como um secretário acadêmico: transforma suas notas rápidas e abreviações em textos médicos elegantes e gramaticalmente perfeitos.
                 </p>
-                <div className="bg-white p-3 rounded border border-violet-200 text-xs font-mono text-slate-600">
-                  Antes: "pregas vocais movem bem, fenda triangular"<br/>
-                  Depois: "Pregas vocais com mobilidade preservada e simétrica. Observa-se fenda glótica triangular posterior à fonação."
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
+                    <Check size={14} className="text-green-400" /> Corrige gramática e concordância
+                  </div>
+                  <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
+                    <Check size={14} className="text-green-400" /> Expande termos técnicos
+                  </div>
+                  <div className="flex items-center gap-3 text-xs font-bold text-slate-500 bg-white/5 p-3 rounded-xl">
+                    <Check size={14} className="text-green-400" /> Preserva seus marcadores de negrito
+                  </div>
                 </div>
               </div>
 
-              {/* DITADO INTELIGENTE */}
-              <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                 <h4 className="font-bold text-slate-800 mb-3 flex items-center gap-2"><Mic size={18} className="text-red-500"/> Ditado Inteligente & Contínuo</h4>
-                 <ul className="space-y-3 text-sm text-slate-600">
-                   <li className="flex gap-2">
-                     <span className="font-bold text-slate-800 shrink-0">1. Cursor Dinâmico:</span>
-                     <span>O texto é inserido exatamente onde o cursor está piscando. Você pode clicar em outro parágrafo enquanto fala, e o ditado acompanhará a mudança de posição instantaneamente.</span>
+              <div className="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 flex flex-col justify-center">
+                 <h4 className="font-black text-indigo-900 mb-4 flex items-center gap-2 uppercase tracking-tighter">
+                   <Mic size={22} className="text-red-500"/> Ditado Contínuo
+                 </h4>
+                 <p className="text-sm text-indigo-800 leading-relaxed mb-4">
+                   O sistema de ditado agora é <strong>Contínuo</strong>: ele não desliga sozinho em silêncios curtos.
+                 </p>
+                 <ul className="space-y-3 text-xs text-indigo-700 font-medium">
+                   <li className="flex gap-2 items-start">
+                     <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></div>
+                     <span>Fale naturalmente enquanto opera o paciente.</span>
                    </li>
-                   <li className="flex gap-2">
-                     <span className="font-bold text-slate-800 shrink-0">2. Auto-Stop (Economia):</span>
-                     <span>Se houver silêncio total ou se você parar de mexer o mouse/teclado por <b>4 segundos</b>, o microfone desliga sozinho para evitar erros.</span>
+                   <li className="flex gap-2 items-start">
+                     <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></div>
+                     <span>O texto é inserido onde o cursor estiver posicionado.</span>
+                   </li>
+                   <li className="flex gap-2 items-start">
+                     <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full mt-1.5 shrink-0"></div>
+                     <span>Clique no ícone novamente para encerrar a escuta.</span>
                    </li>
                  </ul>
               </div>
             </div>
-
-            {/* APRIMORAMENTO DE IMAGEM */}
-            <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100 mt-6 relative overflow-hidden">
-               <div className="relative z-10">
-                 <h4 className="font-bold text-indigo-900 flex items-center gap-2 mb-3 text-lg">
-                    <Sparkles size={20} /> Aprimoramento de Imagem: IA Generativa vs. Tradicional
-                 </h4>
-                 
-                 <p className="text-sm text-indigo-800 mb-6 leading-relaxed">
-                   O ENT Report Pro utiliza <b>Visão Computacional Generativa (Google Gemini Vision)</b>. É fundamental entender a diferença clínica entre este método e corretores de imagem comuns.
-                 </p>
-
-                 <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-white p-4 rounded-lg border border-indigo-200 shadow-sm">
-                       <div className="flex items-center gap-2 mb-2 text-slate-500">
-                          <Settings size={16} /> <span className="font-bold text-xs uppercase">Corretor Tradicional (Filtros)</span>
-                       </div>
-                       <p className="text-xs text-slate-600 leading-relaxed">
-                         Aplica fórmulas matemáticas simples (aumentar contraste, "Sharpen"). Isso frequentemente <b>aumenta o ruído (granulação)</b> e cria bordas artificiais, sem entender o que é tecido e o que é artefato.
-                       </p>
-                    </div>
-
-                    <div className="bg-white p-4 rounded-lg border-2 border-indigo-500 shadow-md relative">
-                       <div className="absolute -top-3 -right-3 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-full">ENT Pro AI</div>
-                       <div className="flex items-center gap-2 mb-2 text-indigo-700">
-                          <ScanFace size={16} /> <span className="font-bold text-xs uppercase">IA Generativa (Gemini)</span>
-                       </div>
-                       <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                         A IA "olha" para a imagem e reconhece estruturas anatômicas (vasos, mucosa, pregas). Ela <b>reconstrói</b> os pixels perdidos pelo desfoque da fibra óptica baseando-se em milhões de exemplos médicos, criando uma imagem de alta definição "provável".
-                       </p>
-                    </div>
-                 </div>
-
-                 <div className="flex items-start gap-3 bg-amber-50 p-4 rounded-lg border border-amber-200">
-                    <AlertTriangle size={20} className="text-amber-600 shrink-0 mt-0.5" />
-                    <div>
-                      <h5 className="font-bold text-amber-800 text-sm mb-1">Implicação Ética e Diagnóstica</h5>
-                      <p className="text-xs text-amber-800 leading-relaxed">
-                        Como a IA reconstrói detalhes, existe uma pequena margem de "alucinação" (criar um detalhe que não existe) ou suavização excessiva de uma lesão real. 
-                        <br/><br/>
-                        <b>Recomendação:</b> Use o recurso para melhorar a documentação visual para o paciente, mas <b>sempre mantenha a imagem original</b> (o sistema cria uma cópia ao lado) para fins legais e diagnóstico definitivo.
-                      </p>
-                    </div>
-                 </div>
-               </div>
-            </div>
-
-            {/* VIDEOKIMOGRAFIA */}
-            <div className="mt-6">
-               <h4 className="font-bold text-slate-800 mb-2 flex items-center gap-2"><Crop size={16}/> Videokimografia Digital (Mosaico)</h4>
-               <p className="text-sm text-slate-600 mb-3">
-                 Acesse o histórico de Burst (pilha de ícones) e abra o Editor. Gire a imagem, corte a glote e gere um mosaico panorâmico automático.
-               </p>
-               <div className="bg-slate-100 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
-                  <strong className="flex items-center gap-1 mb-1 text-slate-900"><Sparkles size={12}/> Dica Avançada:</strong>
-                  Faça um corte transversal da glote com altura mínima (1px) e organize em 1 coluna para um efeito semelhante à <b>videokimografia com câmera ultra-rápida</b>.
-               </div>
-            </div>
           </section>
 
-          {/* Section 4: Finalization (PDF/Print) */}
-          <section>
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-2 border-slate-200">
-              <FileCheck className="text-blue-600" /> 4. Finalização e PDF
-            </h3>
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
-              <h4 className="font-bold text-blue-900 flex items-center gap-2 mb-3">
-                <Printer size={18} /> Como Salvar em PDF?
-              </h4>
-              <p className="text-sm text-slate-700 mb-4 leading-relaxed">
-                Para garantir a máxima fidelidade de formatação e compatibilidade, o sistema utiliza a impressora nativa do seu sistema operacional.
-              </p>
-              <ol className="list-decimal pl-5 space-y-2 text-sm text-slate-700 font-medium">
-                <li>Clique no botão azul <b>Imprimir</b> (Ícone de Impressora) no topo da tela.</li>
-                <li>Na janela que abrir, em "Destino" ou "Impressora", selecione a opção <b>"Salvar como PDF"</b> ou <b>"Microsoft Print to PDF"</b>.</li>
-                <li>Clique em <b>Salvar</b> e escolha onde deseja guardar o arquivo final.</li>
-              </ol>
-            </div>
-          </section>
-
-          {/* Section 5: Shortcuts */}
-          <section>
-            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-2 border-slate-200">
-              <Keyboard className="text-blue-600" /> Atalhos de Teclado
+          {/* Section: Shortcuts */}
+          <section className="pb-10">
+            <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3 border-b-2 pb-3 border-slate-200 uppercase tracking-widest">
+              <Keyboard className="text-blue-600" /> Comandos de Teclado
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-               <div className="bg-slate-800 text-white p-4 rounded-lg text-center">
-                 <span className="block text-2xl font-bold text-blue-400 mb-1">F8</span>
-                 <span className="text-xs uppercase tracking-wider">Foto</span>
-               </div>
-               <div className="bg-slate-800 text-white p-4 rounded-lg text-center">
-                 <span className="block text-2xl font-bold text-red-400 mb-1">F9</span>
-                 <span className="text-xs uppercase tracking-wider">Gravar</span>
-               </div>
-               <div className="bg-slate-800 text-white p-4 rounded-lg text-center">
-                 <span className="block text-2xl font-bold text-slate-400 mb-1">F10</span>
-                 <span className="text-xs uppercase tracking-wider">Tela Cheia</span>
-               </div>
-               <div className="bg-slate-800 text-white p-4 rounded-lg text-center">
-                 <span className="block text-2xl font-bold text-slate-400 mb-1">ESC</span>
-                 <span className="text-xs uppercase tracking-wider">Sair</span>
-               </div>
+               {[
+                 { key: 'F8', action: 'Captura / Burst', color: 'border-blue-200 text-blue-600' },
+                 { key: 'F9', action: 'Vídeo / Pausa', color: 'border-red-200 text-red-600' },
+                 { key: 'F10', action: 'Tela Cheia', color: 'border-slate-200 text-slate-600' },
+                 { key: 'ESC', action: 'Fechar Modais', color: 'border-slate-200 text-slate-400' },
+               ].map((item) => (
+                 <div key={item.key} className={`bg-white border-2 ${item.color} p-6 rounded-3xl text-center shadow-sm hover:scale-105 transition-transform`}>
+                   <span className="block text-3xl font-black mb-1">{item.key}</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{item.action}</span>
+                 </div>
+               ))}
             </div>
-            <p className="text-center text-xs text-slate-500 mt-4">* Os atalhos podem ser personalizados nas configurações.</p>
           </section>
 
         </div>
 
         {/* Footer Actions */}
-        <div className="bg-slate-100 p-6 border-t border-slate-200 flex justify-between items-center shrink-0">
-          <div className="text-xs text-slate-500 font-medium">
-             Desenvolvido por <span className="text-slate-700 font-bold">Dr. Orson Norio Takemoto</span><br/>
-             CRM: 13.716-PR
+        <div className="bg-slate-900 p-8 border-t border-white/5 flex justify-between items-center shrink-0 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-l from-blue-600/5 to-transparent pointer-events-none"></div>
+          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] relative z-10">
+             Desenvolvido para Excelência Clínica • v3.0
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 relative z-10">
             <button 
               onClick={() => window.print()} 
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-700 font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 text-white font-bold text-xs tracking-widest transition-all uppercase"
             >
-              <Printer size={18} />
-              Imprimir Manual
+              <Printer size={16} />
+              Imprimir Guia
             </button>
             <button 
               onClick={onClose}
-              className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold transition-colors"
+              className="px-10 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-900 rounded-2xl font-black text-xs tracking-[0.2em] transition-all uppercase shadow-[0_0_20px_rgba(34,211,238,0.3)]"
             >
-              Entendi
+              Entendi, Vamos Começar
             </button>
           </div>
         </div>
