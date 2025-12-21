@@ -1,11 +1,16 @@
 
 import { ExamTemplate } from './types';
 
+/**
+ * Edite este objeto para alterar os esqueletos padrão que aparecem no seletor de exames.
+ * findings: Estrutura que aparece no campo "Descrição". Use \n para pular linha e **texto** para negrito.
+ * conclusion: Texto que aparece por padrão no campo "Conclusão".
+ */
 export const EXAM_TEMPLATES: Record<string, ExamTemplate> = {
   nasofibro: {
     label: "Vídeo-nasofibrolaringoscopia",
     equipment: "Nasofibroscópio flexível de 3.2mm.",
-    findings: "**Fossas Nasais:** \n**Septo Nasal:** \n**Cornetos Inferiores:** \n**Meatos Médios:** \n**Rinofaringe (Cavum):** \n**Orofaringe:** \n**Base de Língua e Valéculas:** \n**Hipofaringe / Seios Piriformes:** \n**Laringe (Epiglote e Aritenoides):** \n**Pregas Vocais:** \n**Mobilidade Laringea:** ",
+    findings: "**Vestíbulos nasais:** \n**Septo Nasal:** \n**Conchas Inferiores:** \n**Meatos Médios:** \n**Conchas Médias:** \n**Rinofaringe:** \n**Orofaringe:** \n**Base de Língua e Valéculas:** \n**Hipofaringe / Seios Piriformes:** \n**Laringe (Epiglote e Aritenoides):** \n**Pregas Vocais:** \n**Mobilidade Laringea:** ",
     conclusion: "**Exame compatível com:** "
   },
   laringo: {
@@ -36,7 +41,7 @@ export const EXAM_TEMPLATES: Record<string, ExamTemplate> = {
 
 export const DEFAULT_SETTINGS = {
   clinicName: "Clínica Otorrino Exemplo",
-  clinicSubtitle: "Otorrinolaringologia e Cirurgia Cérvico-Facial",
+  clinicSubtitle: "Otorrinolaringologia e Criurgia Cérvico-Facial",
   clinicAddress: "Av. Paulista, 1000 - Sala 101 - São Paulo/SP",
   clinicPhone: "(11) 99999-9999",
   doctorName: "Dr. João Silva",
@@ -45,17 +50,13 @@ export const DEFAULT_SETTINGS = {
   logoBase64: null,
   signatureBase64: null,
   
-  // DEVELOPER: INSIRA SUAS URLS AQUI
-  // Substitua as strings abaixo pelos links das suas imagens hospedadas (ou imports locais)
-  // Ex: "https://meusite.com/minha-foto.jpg" ou base64
   landingHeroImage: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1000&q=80",
   landingShowcaseImage: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80",
 
   savedEquipments: ["Ótica Rígida 70º", "Nasofibroscópio Flexível 3.2mm", "Ótica Rígida 0º"],
   customTemplates: [], 
-  customExamTypes: {}, // Inicialização vazia para exames personalizados
+  customExamTypes: {}, 
   
-  // Configuração de Campos do Paciente
   visiblePatientFields: {
     document: true,
     profession: true,
@@ -64,25 +65,21 @@ export const DEFAULT_SETTINGS = {
     indicatedBy: true,
     requestedBy: true
   },
-  customPatientFields: [], // Lista vazia inicialmente
+  customPatientFields: [], 
 
   photosGridColumns: 4,
-  burstSpeed: 15, // 15 fps padrão
-  autoCropEnabled: true, // Recorte automático ativado por padrão
+  burstSpeed: 15, 
+  autoCropEnabled: true, 
   
-  // Câmera
   selectedCameraId: '',
-
-  // Novos Padrões de Estilo
   fontFamily: 'Century Gothic',
   logoPosition: 'left',
   logoSize: 'medium',
   themeColor: 'blue',
-  printFontSize: 100, // 100% como padrão
-  signaturePosition: 'center', // Posição padrão da assinatura
-  signatureStyle: null, // Novo campo para estilo livre da assinatura
+  printFontSize: 100, 
+  signaturePosition: 'center', 
+  signatureStyle: null, 
   
-  // Atalhos
   photoShortcut: 'F8',
   recordShortcut: 'F9',
   fullscreenShortcut: 'F10'
