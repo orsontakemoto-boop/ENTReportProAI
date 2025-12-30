@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // Carrega variáveis de ambiente (inclusive do Vercel)
-  // Using '.' instead of process.cwd() to avoid TypeScript error regarding 'cwd' property on 'Process' type
-  const env = loadEnv(mode, '.', '');
+  // Load env variables from the current directory
+  // Fix: Use type assertion on process to access cwd() and resolve Property 'cwd' does not exist on type 'Process'
+  const env = loadEnv(mode, (process as any).cwd(), '');
 
   return {
     plugins: [react()],
@@ -14,8 +14,8 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist'
     },
     define: {
-      // Isso permite que o código use process.env.API_KEY no navegador
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
+      // Direct replacement for process.env.API_KEY as per GenAI instructions
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || '')
     }
   }
 })

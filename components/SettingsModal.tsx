@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { X, Save, Upload, Plus, Trash2, PenTool, LayoutGrid, Palette, Type, AlignLeft, AlignCenter, AlignRight, Maximize, Minimize, FolderOpen, CheckCircle, AlertTriangle, Gauge, HelpCircle, ExternalLink, Key, Keyboard, Layers, Droplet, UserCog, ToggleLeft, ToggleRight, LayoutTemplate } from 'lucide-react';
 import { DoctorSettings } from '../types';
@@ -30,7 +31,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
     // @ts-ignore
     setFormData(prev => ({ 
       ...prev, 
-      [name]: type === 'checkbox' ? checked : (type === 'number' || name === 'photosGridColumns' || name === 'burstSpeed' ? Number(value) : value) 
+      [name]: type === 'checkbox' ? checked : (type === 'number' || name === 'photosGridColumns' || name === 'burstSpeed' || name === 'printFontSize' ? Number(value) : value) 
     }));
   };
 
@@ -437,6 +438,34 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
                    <option value="Playfair Display">Playfair Display (Serifa/Elegante)</option>
                    <option value="Lato">Lato (Amigável)</option>
                  </select>
+               </div>
+
+               {/* Tamanho Global da Fonte de Impressão */}
+               <div>
+                 <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium text-slate-700 flex items-center gap-2">
+                       <Type size={16} /> 
+                       Tamanho da Fonte (Laudo)
+                    </label>
+                    <span className="text-xs font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded">
+                      {formData.printFontSize || 100}%
+                    </span>
+                 </div>
+                 <input 
+                    type="range" 
+                    name="printFontSize" 
+                    min="70" 
+                    max="150" 
+                    step="5" 
+                    value={formData.printFontSize || 100} 
+                    onChange={handleChange}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                 />
+                 <div className="flex justify-between text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-tighter">
+                   <span>Compacto (70%)</span>
+                   <span>Padrão</span>
+                   <span>Grande (150%)</span>
+                 </div>
                </div>
 
                {/* Tema de Cor */}

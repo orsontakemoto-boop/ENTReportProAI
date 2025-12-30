@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
@@ -49,6 +50,16 @@
       
       .font-system-sans { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; }
       .font-system-serif { font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif; }
+
+      /* Estratégia de Escalonamento Global para Impressão */
+      .font-content-wrapper .text-[10px] { font-size: 0.625em; }
+      .font-content-wrapper .text-xs { font-size: 0.75em; }
+      .font-content-wrapper .text-sm { font-size: 0.875em; }
+      .font-content-wrapper .text-base { font-size: 1em; }
+      .font-content-wrapper .text-lg { font-size: 1.125em; }
+      .font-content-wrapper .text-xl { font-size: 1.25em; }
+      .font-content-wrapper .text-2xl { font-size: 1.5em; }
+      .font-content-wrapper .text-3xl { font-size: 1.875em; }
 
       @media print {
         @page { margin: 15mm; size: A4; }

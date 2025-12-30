@@ -1,296 +1,150 @@
 
 import React from 'react';
-import { 
-  ArrowRight, 
-  BrainCircuit, 
-  Video, 
-  Activity, 
-  Layers, 
-  Play,
-  Mic,
-  Sparkles,
-  Settings,
-  AlertTriangle
-} from 'lucide-react';
+import { ArrowRight, Sparkles, Activity } from 'lucide-react';
 import { DoctorSettings } from '../types';
-import { DEFAULT_SETTINGS } from '../constants';
 
 interface LandingPageProps {
   onEnterApp: () => void;
   settings: DoctorSettings;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp, settings }) => {
-  
-  const scrollToShowcase = () => {
-    const element = document.getElementById('showcase-section');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // DEVELOPER NOTE: Images are now hardcoded in constants.ts (DEFAULT_SETTINGS).
-  // This ignores user settings for these specific images to allow developer control.
-  const heroImage = DEFAULT_SETTINGS.landingHeroImage;
-  const showcaseImage = DEFAULT_SETTINGS.landingShowcaseImage;
-
+const LandingPage: React.FC<LandingPageProps> = ({ onEnterApp }) => {
   return (
-    <div className="h-screen w-full bg-white font-inter text-slate-900 overflow-y-auto overflow-x-hidden scroll-smooth">
+    <div className="h-screen w-full bg-[#010409] font-inter text-white overflow-hidden flex items-center justify-center relative">
       
-      {/* --- NAVBAR --- */}
-      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-              <Activity size={24} />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-slate-900 leading-none">ENT Report Pro AI</h1>
-              <span className="text-xs text-blue-600 font-bold tracking-wider uppercase">Medical Systems</span>
-            </div>
+      {/* --- ATMOSFERA SPIELBERG AI (LIGHTS & PARTICLES) --- */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        
+        {/* Luzes Volumétricas em Movimento (Orbs) */}
+        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-600/20 rounded-full blur-[160px] animate-float-slow"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[80vw] h-[80vw] bg-indigo-900/30 rounded-full blur-[180px] animate-float-reverse"></div>
+        <div className="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] bg-cyan-500/15 rounded-full blur-[140px] animate-float-mid"></div>
+        
+        {/* Partículas / Bokeh */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full animate-ping-slow shadow-[0_0_10px_white]"></div>
+          <div className="absolute top-3/4 left-1/3 w-1.5 h-1.5 bg-cyan-300 rounded-full animate-ping-slow delay-700 shadow-[0_0_12px_cyan]"></div>
+          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-blue-400 rounded-full animate-ping-slow delay-1000 shadow-[0_0_8px_blue]"></div>
+          <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-white rounded-full animate-ping-slow delay-300 shadow-[0_0_10px_white]"></div>
+        </div>
+
+        {/* Anamorphic Lens Flare Line (Assinatura Spielberg) */}
+        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent shadow-[0_0_15px_rgba(6,182,212,0.5)] rotate-[-1deg]"></div>
+        <div className="absolute top-[48%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent shadow-[0_0_10px_rgba(59,130,246,0.3)] rotate-[0.5deg]"></div>
+
+        {/* Noise/Grain para Textura Cinematográfica */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      </div>
+
+      {/* --- CONTEÚDO CENTRAL --- */}
+      <div className="relative z-10 flex flex-col items-center max-w-2xl px-6 text-center">
+        
+        {/* Portal de Entrada / Logo Icon */}
+        <div className="mb-14 animate-in fade-in zoom-in duration-1000">
+          <div className="relative group">
+             {/* Glow Externo */}
+             <div className="absolute inset-[-20px] bg-blue-500/20 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-1000"></div>
+             
+             {/* Container do Ícone */}
+             <div className="relative w-24 h-24 bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[2rem] flex items-center justify-center shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                <Activity size={48} className="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] animate-pulse" />
+                
+                {/* Linha de scan passando pelo ícone */}
+                <div className="absolute inset-0 w-full h-1 bg-cyan-400/20 shadow-[0_0_10px_cyan] translate-y-[-100%] animate-scan"></div>
+             </div>
           </div>
+        </div>
+
+        {/* Título com Efeito de Luz */}
+        <div className="space-y-6 mb-20 animate-in slide-in-from-bottom-12 duration-1000">
+          <div className="relative">
+            <h1 className="text-4xl md:text-7xl font-black tracking-[0.25em] uppercase leading-tight">
+              ENT REPORT 
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-indigo-500 drop-shadow-[0_0_20px_rgba(34,211,238,0.3)]">
+                PRO AI
+              </span>
+            </h1>
+            {/* Shimmer effect on text */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg] translate-x-[-150%] animate-shimmer-text"></div>
+          </div>
+          
+          <div className="flex items-center justify-center gap-4 opacity-60">
+             <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-cyan-500/50"></div>
+             <p className="text-[10px] md:text-xs font-medium tracking-[0.6em] text-cyan-100/70 uppercase">
+               Advanced Surgical Documentation & Analysis
+             </p>
+             <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-cyan-500/50"></div>
+          </div>
+        </div>
+
+        {/* Botão de Início "Glow Energy" */}
+        <div className="animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
           <button 
             onClick={onEnterApp}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold transition-all shadow-lg shadow-blue-200 hover:shadow-blue-300 flex items-center gap-2"
+            className="group relative px-16 py-6 bg-white text-slate-950 rounded-full font-black text-xl tracking-[0.2em] transition-all hover:scale-110 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_70px_rgba(34,211,238,0.4)] flex items-center gap-5 overflow-hidden"
           >
-            Acessar Sistema <ArrowRight size={18} />
+            {/* Aura de energia interna */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-200/0 via-cyan-400/20 to-cyan-200/0 translate-x-[-200%] group-hover:animate-shimmer duration-[2000ms]"></div>
+            
+            <span className="relative z-10">INICIAR EXAME</span>
+            <ArrowRight size={24} className="relative z-10 group-hover:translate-x-2 transition-transform duration-500" />
+            
+            {/* Border glow sutil */}
+            <div className="absolute inset-0 rounded-full border border-white/50 group-hover:border-cyan-400 transition-colors"></div>
           </button>
         </div>
-      </nav>
 
-      {/* --- HERO SECTION --- */}
-      <header className="relative pt-32 pb-16 lg:pt-40 lg:pb-24 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          
-          {/* Text Content */}
-          <div className="relative z-10 animate-in slide-in-from-left duration-700">
-            <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-sm font-bold mb-6 border border-indigo-100">
-              <Sparkles size={16} />
-              Nova IA de Visão Computacional Generativa
-            </div>
-            <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 mb-6 leading-tight">
-              A Revolução do <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Laudo Médico</span>.
-            </h1>
-            <p className="text-xl text-slate-600 mb-8 leading-relaxed max-w-xl">
-              Ditado inteligente que segue seu cursor, imagens endoscópicas aprimoradas em HD e laudos escritos por IA. A tecnologia mais avançada para Otorrinolaringologistas.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button 
-                onClick={onEnterApp}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-lg px-8 py-4 rounded-xl font-bold transition-all shadow-xl flex items-center justify-center gap-2"
-              >
-                Iniciar Exame Agora
-              </button>
-              <button 
-                onClick={scrollToShowcase}
-                className="px-8 py-4 rounded-xl font-bold text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
-              >
-                <Play size={20} className="text-blue-600" /> Ver Consultório
-              </button>
-            </div>
-            
-            <div className="mt-10 flex items-center gap-4 text-sm text-slate-500 font-medium">
-              <div className="flex -space-x-2">
-                <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
-                   <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=100&q=80" alt="Avatar" className="w-full h-full object-cover"/>
-                </div>
-                <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
-                   <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=100&q=80" alt="Avatar" className="w-full h-full object-cover"/>
-                </div>
-                <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-slate-200">
-                   <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=100&q=80" alt="Avatar" className="w-full h-full object-cover"/>
-                </div>
-              </div>
-              <p>Tecnologia validada por especialistas.</p>
-            </div>
-          </div>
-
-          {/* Hero Image (Foto 1: Médico) */}
-          <div className="relative lg:h-[600px] w-full animate-in slide-in-from-right duration-1000">
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-indigo-400/20 rounded-[3rem] transform rotate-3 scale-95 blur-2xl"></div>
-            
-            <img 
-              src={heroImage} 
-              alt="Médico Otorrino" 
-              className="relative w-full h-full object-cover rounded-[2rem] shadow-2xl border-8 border-white"
-            />
-            
-            {/* Floating Card - Image AI */}
-            <div className="absolute top-10 -right-4 bg-white p-4 rounded-xl shadow-xl border border-slate-100 max-w-xs animate-pulse duration-[4000ms]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
-                  <Sparkles size={20} />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900">Restauro de Imagem</p>
-                  <p className="text-xs text-slate-500">Padrão → Ultra HD (0.5s)</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating Card - Dictation */}
-            <div className="absolute bottom-10 -left-6 bg-white p-4 rounded-xl shadow-xl border border-slate-100 max-w-xs animate-bounce duration-[3000ms]">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600">
-                  <Mic size={20} />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900">Ditado Ativo</p>
-                  <p className="text-xs text-slate-500">Transcrevendo em tempo real...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        {/* Footer Tagline */}
+        <div className="mt-32 flex items-center gap-3 text-slate-500 animate-in fade-in duration-1000 delay-1000">
+          <Sparkles size={16} className="text-cyan-500/40 animate-pulse" />
+          <span className="text-[9px] uppercase tracking-[0.4em] font-semibold opacity-40">Precision AI Computer Vision Protocol</span>
+          <div className="w-1 h-1 bg-cyan-500/30 rounded-full"></div>
+          <span className="text-[9px] uppercase tracking-[0.4em] font-semibold opacity-40">v3.0 Secure Node</span>
         </div>
-      </header>
+      </div>
 
-      {/* --- SHOWCASE SECTION (Foto 2: Consultório) --- */}
-      <section id="showcase-section" className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="bg-slate-900 rounded-[2.5rem] p-8 lg:p-16 relative overflow-hidden shadow-2xl">
-             {/* Background Pattern */}
-             <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-                <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <path d="M0 100 C 20 0 50 0 100 100 Z" fill="white" />
-                </svg>
-             </div>
+      {/* --- ESTILOS DE ANIMAÇÃO PERSONALIZADOS --- */}
+      <style>{`
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+          50% { transform: translate(5%, 5%) scale(1.1); opacity: 0.3; }
+        }
+        @keyframes float-reverse {
+          0%, 100% { transform: translate(0, 0) scale(1.1); opacity: 0.3; }
+          50% { transform: translate(-5%, -5%) scale(1); opacity: 0.2; }
+        }
+        @keyframes float-mid {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+          50% { transform: translate(-3%, 8%) scale(1.2); opacity: 0.25; }
+        }
+        @keyframes ping-slow {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.5); opacity: 0.8; }
+        }
+        @keyframes shimmer {
+          100% { transform: translateX(200%); }
+        }
+        @keyframes shimmer-text {
+          0% { transform: translateX(-150%) skewX(-20deg); }
+          20%, 100% { transform: translateX(200%) skewX(-20deg); }
+        }
+        @keyframes scan {
+          0% { transform: translateY(-100%); opacity: 0; }
+          50% { opacity: 0.5; }
+          100% { transform: translateY(2400%); opacity: 0; }
+        }
+        
+        .animate-float-slow { animation: float-slow 15s ease-in-out infinite; }
+        .animate-float-reverse { animation: float-reverse 18s ease-in-out infinite; }
+        .animate-float-mid { animation: float-mid 12s ease-in-out infinite; }
+        .animate-ping-slow { animation: ping-slow 4s ease-in-out infinite; }
+        .animate-shimmer { animation: shimmer 2s infinite; }
+        .animate-shimmer-text { animation: shimmer-text 8s infinite; }
+        .animate-scan { animation: scan 3s linear infinite; }
 
-             <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                <div className="order-2 lg:order-1">
-                   <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">Seu Consultório. <br/>Digitalizado e Eficiente.</h2>
-                   <p className="text-slate-300 text-lg mb-8 leading-relaxed">
-                     Uma estação de trabalho completa que se integra ao seu equipamento de endoscopia existente. Capture, edite e laude diretamente no navegador, com a segurança de que seus dados permanecem locais.
-                   </p>
-                   <ul className="space-y-4 mb-8">
-                      <li className="flex items-center gap-3 text-slate-200">
-                        <div className="bg-green-500/20 p-1 rounded-full"><Activity size={16} className="text-green-400"/></div>
-                        Compatível com qualquer placa de captura USB.
-                      </li>
-                      <li className="flex items-center gap-3 text-slate-200">
-                        <div className="bg-blue-500/20 p-1 rounded-full"><Video size={16} className="text-blue-400"/></div>
-                        Interface otimizada para "Split Screen" (Vídeo + Texto).
-                      </li>
-                      <li className="flex items-center gap-3 text-slate-200">
-                        <div className="bg-purple-500/20 p-1 rounded-full"><BrainCircuit size={16} className="text-purple-400"/></div>
-                        Assistência de IA em tempo real.
-                      </li>
-                   </ul>
-                   <button onClick={onEnterApp} className="bg-white text-slate-900 font-bold px-6 py-3 rounded-xl hover:bg-slate-100 transition-colors">
-                     Experimentar Agora
-                   </button>
-                </div>
-                
-                {/* Foto 2: Notebook e Equipamento */}
-                <div className="order-1 lg:order-2 relative h-[400px] rounded-2xl overflow-hidden border-4 border-slate-700 shadow-2xl group">
-                   <img 
-                     src={showcaseImage} 
-                     alt="Mesa de consultório médico" 
-                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent pointer-events-none"></div>
-                   <div className="absolute bottom-4 left-4 text-white">
-                      <p className="font-bold text-sm uppercase tracking-wider flex items-center gap-2">
-                        <Settings size={14} className="text-blue-400" /> Workstation Pro
-                      </p>
-                      <p className="text-xs text-slate-300">Ambiente integrado de captura e laudo.</p>
-                   </div>
-                </div>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- FEATURES GRID --- */}
-      <section className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">Poder Total no seu Navegador</h2>
-            <p className="text-lg text-slate-600">
-              Uma suíte completa de ferramentas diagnósticas que substitui softwares caros e complexos.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            {/* Feature 1: Dictation (NEW) */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-red-100 transition-all group">
-              <div className="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center text-red-600 mb-6 group-hover:scale-110 transition-transform">
-                <Mic size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Ditado Inteligente</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Esqueça o teclado. O cursor segue sua voz e permite navegar pelo texto enquanto dita. Pausa automática após 4s de silêncio.
-              </p>
-            </div>
-
-            {/* Feature 2: Image AI (NEW) */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-indigo-100 transition-all group">
-              <div className="w-14 h-14 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 mb-6 group-hover:scale-110 transition-transform">
-                <Sparkles size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Aprimoramento Visual IA</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Eleve a resolução de qualquer equipamento. Elimine ruídos e granulações, obtendo nitidez comparável a sistemas de vídeo de alta performance.
-              </p>
-            </div>
-
-            {/* Feature 3: Text AI */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-violet-100 transition-all group">
-              <div className="w-14 h-14 bg-violet-50 rounded-xl flex items-center justify-center text-violet-600 mb-6 group-hover:scale-110 transition-transform">
-                <BrainCircuit size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Redator Médico AI</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Digite tópicos soltos e veja a IA reescrever seus achados em linguagem médica culta, formal e elegante instantaneamente.
-              </p>
-            </div>
-
-            {/* Feature 4: Capture */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-blue-100 transition-all group">
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
-                <Video size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Captura HD & Burst</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Vídeos com áudio e sequências de fotos (Burst) a 60fps. Perfeito para capturar o ciclo glótico em detalhes.
-              </p>
-            </div>
-
-            {/* Feature 5: LaringoAI */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-purple-100 transition-all group">
-              <div className="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 mb-6 group-hover:scale-110 transition-transform">
-                <Activity size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">LaringoAI™ Integration</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Conexão nativa com LaringoAI para análise estroboscópica automatizada de frequência, amplitude e simetria.
-              </p>
-            </div>
-
-            {/* Feature 6: Kimography */}
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:border-teal-100 transition-all group">
-              <div className="w-14 h-14 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform">
-                <Layers size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">Videokimografia Digital</h3>
-              <p className="text-slate-600 leading-relaxed text-sm">
-                Crie mosaicos panorâmicos e tiras de tempo (kymograms) a partir de seus vídeos com nosso editor exclusivo.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* --- FOOTER --- */}
-      <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="mb-4 text-slate-500">Desenvolvido com tecnologia de ponta para Otorrinolaringologia.</p>
-          <p className="text-sm">© 2024 ENT Report Pro AI - Dr. Orson Norio Takemoto</p>
-        </div>
-      </footer>
-
+        .font-inter { font-family: 'Inter', sans-serif; }
+      `}</style>
     </div>
   );
 };

@@ -1,48 +1,32 @@
 
-import { GoogleGenAI } from "@google/genai";
-
-declare const process: any;
-
-const getApiKey = () => {
-  let apiKey = '';
-  try {
-     apiKey = process.env.API_KEY;
-  } catch (e) {
-     console.warn("process.env.API_KEY não acessível diretamente.", e);
-  }
-
-  if (!apiKey) {
-    throw new Error("API Key do Google Gemini não configurada.");
-  }
-  return apiKey;
-};
+// Use correct import for GoogleGenAI and response types
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 export const refineTextWithAI = async (text: string): Promise<string> => {
-  const apiKey = getApiKey();
-  if (!text.trim()) {
-    throw new Error("Texto vazio.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  if (!text.trim()) throw new Error("Texto vazio.");
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
-    Atue como um médico otorrinolaringologista sênior e acadêmico.
-    Sua tarefa é refinar e melhorar o vocabulário técnico do rascunho de laudo abaixo.
-    DIRETRIZES OBRIGATÓRIAS DE FORMATAÇÃO:
-    1. **ESTRUTURA EM TÓPICOS**: O texto final DEVE ser apresentado estritamente em lista vertical.
-    2. **NÃO USE TEXTO CORRIDO**: Jamais agrupe os achados em um único parágrafo. Cada estrutura anatômica deve ter sua própria linha.
-    3. **MARCADORES**: Inicie cada linha com um traço simples "- " para facilitar a leitura.
-    Texto original para refinar:
+    Atue como um médico otorrinolaringologista sênior focado em laudos objetivos.
+    Refine o texto abaixo para torná-lo técnico, porém DIRETO e SEM REBUSCAMENTO desnecessário.
+    
+    REGRAS ESTRITAS:
+    1. PRESERVE INTEGRALMENTE a estrutura de tópicos e os termos em NEGRITO (**texto**).
+    2. Use linguagem médica clara e funcional. Evite termos literários, arcaicos ou adjetivação excessiva.
+    3. Seja conciso: elimine verbos de ligação e preenchimentos irrelevantes (Ex: em vez de "Nota-se a presença de um desvio", use "**Septo:** Desvio...").
+    4. Mantenha a precisão técnica sem ser prolixo.
+    5. Retorne APENAS o laudo refinado.
+
+    Texto a refinar: 
     "${text}"
   `;
 
   try {
-    const response = await ai.models.generateContent({
+    const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
-    
-    return response.text || text;
+    return response.text?.trim() || text;
   } catch (error) {
     console.error("Gemini Error:", error);
     throw new Error("Falha ao conectar com a IA.");
@@ -50,87 +34,55 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
 };
 
 export const generateConclusionWithAI = async (findings: string): Promise<string> => {
-  const apiKey = getApiKey();
-  if (!findings.trim()) {
-    throw new Error("A descrição do exame está vazia. Descreva os achados primeiro.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey: apiKey });
+  if (!findings.trim()) throw new Error("Achados vazios.");
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const prompt = `
-    Atue como um médico otorrinolaringologista sênior. 
-    Analise a descrição dos achados endoscópicos abaixo e forneça uma "Conclusão" ou "Hipótese Diagnóstica" precisa e concisa.
+    Atue como um médico otorrinolaringologista sênior.
+    Forneça uma conclusão/hipótese diagnóstica baseada nos achados fornecidos.
     
-    DIRETRIZES:
-    1. Use terminologia médica formal (ex: em vez de 'carne no nariz', use 'hipertrofia de cornetos' ou 'adenoides').
-    2. Se houver sinais de refluxo, mencione 'Sinais sugestivos de refluxo laringofaríngeo'.
-    3. Se houver desvio de septo, classifique-o se possível.
-    4. Seja direto: forneça apenas os diagnósticos encontrados.
-    5. Inicie com "Exame compatível com:" ou "Hipótese Diagnóstica:".
+    REGRAS DE OURO:
+    1. Retorne EXCLUSIVAMENTE os diagnósticos em TÓPICOS (usando "- ").
+    2. NÃO explique os diagnósticos. NÃO adicione justificativas ou descrições para os itens.
+    3. Use apenas a NOMENCLATURA TÉCNICA MÉDICA direta.
+    4. Use NEGRITO (**texto**) para cada diagnóstico.
+    5. Retorno extremamente limpo e conciso.
     
-    Achados descritos:
-    "${findings}"
-    
-    Responda apenas com o texto da conclusão.
+    Achados: "${findings}"
   `;
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+    const response: GenerateContentResponse = await ai.models.generateContent({
+      model: 'gemini-3-pro-preview',
       contents: prompt,
     });
-    
-    return response.text || "";
+    return response.text?.trim() || "";
   } catch (error) {
-    console.error("Gemini Conclusion Error:", error);
-    throw new Error("Falha ao gerar conclusão automática.");
+    console.error("Gemini Error:", error);
+    throw new Error("Erro na IA.");
   }
 };
 
 export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<string> => {
-  const apiKey = getApiKey();
-  const ai = new GoogleGenAI({ apiKey: apiKey });
-
-  if (!base64ImageUrl) {
-     throw new Error("Imagem inválida.");
-  }
-
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
-    throw new Error("Formato de imagem inválido.");
-  }
-  const mimeType = matches[1];
-  const base64Data = matches[2];
-
-  const prompt = `
-    Esta é uma imagem de endoscopia de fibra óptica. Restaure-a para alta definição, 
-    eliminando o efeito de mosaico das fibras e melhorando a nitidez da mucosa e vasos sanguíneos.
-  `;
-
+  if (!matches) throw new Error("Imagem inválida.");
+  
   try {
-    const response = await ai.models.generateContent({
+    const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
       contents: {
         parts: [
-          { inlineData: { mimeType: mimeType, data: base64Data } },
-          { text: prompt }
+          { inlineData: { mimeType: matches[1], data: matches[2] } },
+          { text: "Restaure esta imagem de endoscopia removendo o efeito mosaico das fibras e ruído digital." }
         ]
       }
     });
-
-    const candidate = response.candidates?.[0];
-    const parts = candidate?.content?.parts;
-
-    if (parts) {
-      for (const part of parts) {
-        if (part.inlineData && part.inlineData.data) {
-          return `data:image/png;base64,${part.inlineData.data}`;
-        }
-      }
-    }
-    throw new Error("A IA não retornou uma imagem válida.");
+    const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    if (part?.inlineData?.data) return `data:image/png;base64,${part.inlineData.data}`;
+    throw new Error("Sem retorno de imagem.");
   } catch (error) {
-    console.error("Gemini Image Enhancement Error:", error);
-    throw new Error("Falha ao aprimorar a imagem.");
+    console.error("Gemini Error:", error);
+    throw new Error("Falha no processamento de imagem.");
   }
 };
