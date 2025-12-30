@@ -7,17 +7,17 @@ import { refineTextWithAI, enhanceMedicalImage, generateConclusionWithAI } from 
 
 // Componente do Ícone Gemini
 const GeminiIcon = ({ size = 16, className = "" }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    <path 
-      d="M12 2C12.5 6.5 16 9.5 21 12C16 14.5 12.5 17.5 12 22C11.5 17.5 8 14.5 3 12C8 9.5 11.5 6.5 12 2Z" 
-      fill="url(#geminiGradient)" 
+    <path
+      d="M12 2C12.5 6.5 16 9.5 21 12C16 14.5 12.5 17.5 12 22C11.5 17.5 8 14.5 3 12C8 9.5 11.5 6.5 12 2Z"
+      fill="url(#geminiGradient)"
     />
     <defs>
       <linearGradient id="geminiGradient" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
@@ -37,7 +37,7 @@ interface ReportEditorProps {
   capturedImages: CapturedImage[];
   onRemoveImage: (id: string) => void;
   onUpdateImage: (id: string, updates: Partial<CapturedImage>) => void;
-  onAddImageAfter: (targetId: string, newImage: CapturedImage) => void; 
+  onAddImageAfter: (targetId: string, newImage: CapturedImage) => void;
   onOpenSettings: () => void;
   onNewReport: () => void;
   onUpdateSettings: (settings: DoctorSettings) => void;
@@ -100,7 +100,7 @@ const MosaicResizableImage: React.FC<{
         <div className="hidden group-hover:block">
           <div className="absolute top-1/2 right-0 w-4 h-8 bg-white border border-blue-600 rounded-full cursor-e-resize translate-x-1/2 -translate-y-1/2 pointer-events-auto shadow-sm flex items-center justify-center z-30" onMouseDown={(e) => handleMouseDown(e, 'e')}><div className="w-0.5 h-4 bg-blue-300"></div></div>
           <div className="absolute bottom-0 left-1/2 w-8 h-4 bg-white border border-blue-600 rounded-full cursor-s-resize -translate-x-1/2 translate-y-1/2 pointer-events-auto shadow-sm flex items-center justify-center z-30" onMouseDown={(e) => handleMouseDown(e, 's')}><div className="w-4 h-0.5 bg-blue-300"></div></div>
-          <div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-se-resize translate-x-1/2 translate-y-1/2 pointer-events-auto shadow-md z-40" onMouseDown={(e) => handleMouseDown(e, 'se')}/>
+          <div className="absolute bottom-0 right-0 w-5 h-5 bg-blue-600 border-2 border-white rounded-full cursor-se-resize translate-x-1/2 translate-y-1/2 pointer-events-auto shadow-md z-40" onMouseDown={(e) => handleMouseDown(e, 'se')} />
         </div>
       </div>
     </div>
@@ -141,16 +141,16 @@ const DraggableSignature: React.FC<{
   };
   const resetPosition = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if(confirm('Redefinir posição da assinatura?')) {
-        onUpdateSettings({ ...settings, signatureStyle: { x: 0, y: 0, width: 200 } });
+    if (confirm('Redefinir posição da assinatura?')) {
+      onUpdateSettings({ ...settings, signatureStyle: { x: 0, y: 0, width: 200 } });
     }
   };
   return (
     <div className="relative group inline-block" style={{ transform: `translate(${style.x}px, ${style.y}px)`, width: `${style.width}px`, cursor: 'move', zIndex: 20, mixBlendMode: 'multiply' }} onMouseDown={handleMouseDown} title="Arraste para mover">
       <div className="absolute -top-6 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity no-print z-50">
-         <span className="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer" onClick={resetPosition}>
-             <Move size={10} /> Mover / Resetar
-         </span>
+        <span className="bg-slate-800 text-white text-[10px] px-2 py-0.5 rounded flex items-center gap-1 cursor-pointer" onClick={resetPosition}>
+          <Move size={10} /> Mover / Resetar
+        </span>
       </div>
       <img src={settings.signatureBase64} alt="Assinatura" className="w-full h-auto object-contain pointer-events-none select-none" />
       <div className="absolute inset-0 border-2 border-dashed border-blue-400 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity no-print rounded"></div>
@@ -171,13 +171,13 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const [showNewExamModal, setShowNewExamModal] = useState(false);
   const [newExamData, setNewExamData] = useState<ExamTemplate & { key: string }>({ label: '', equipment: '', findings: '', conclusion: '', key: '' });
   const [enhancingImageId, setEnhancingImageId] = useState<string | null>(null);
-  
+
   const reportContentRef = useRef<HTMLDivElement>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const findingsRef = useRef<HTMLTextAreaElement>(null);
   const conclusionRef = useRef<HTMLTextAreaElement>(null);
-  const recognitionRef = useRef<any>(null); 
-  
+  const recognitionRef = useRef<any>(null);
+
   const availableExams = { ...EXAM_TEMPLATES, ...(settings.customExamTypes || {}) };
   const customExamKeys = settings.customExamTypes ? Object.keys(settings.customExamTypes) : [];
   const isSelectedCustom = customExamKeys.includes(report.examType);
@@ -196,22 +196,22 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const videoId = getYouTubeId(report.videoLink);
   const qrCodeUrl = (videoId || report.videoLink) ? `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(videoId ? `https://www.youtube.com/watch?v=${videoId}` : report.videoLink)}` : null;
 
-  const handleExamChange = (e: React.ChangeEvent<HTMLSelectElement>) => { 
-    const type = e.target.value; 
-    if (type === 'NEW_CUSTOM_EXAM') { setShowNewExamModal(true); return; } 
-    const template = availableExams[type]; 
-    setReport({ ...report, examType: type, equipment: template ? template.equipment : '', findings: template ? template.findings : '', conclusion: template ? template.conclusion : '', }); 
-    if (type === 'laringo') setShowLaringoModal(true); 
+  const handleExamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const type = e.target.value;
+    if (type === 'NEW_CUSTOM_EXAM') { setShowNewExamModal(true); return; }
+    const template = availableExams[type];
+    setReport({ ...report, examType: type, equipment: template ? template.equipment : '', findings: template ? template.findings : '', conclusion: template ? template.conclusion : '', });
+    if (type === 'laringo') setShowLaringoModal(true);
   };
-  
-  const handleSaveNewExam = () => { 
-    if (!newExamData.label.trim()) return alert("Nome obrigatório"); 
-    const key = newExamData.label.toLowerCase().replace(/[^a-z0-9]/g, '_'); 
-    if (availableExams[key]) return alert("Já existe um exame com este nome."); 
-    const updatedSettings = { ...settings, customExamTypes: { ...(settings.customExamTypes || {}), [key]: { label: newExamData.label, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion } } }; 
-    onUpdateSettings(updatedSettings); 
-    setReport({ ...report, examType: key, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion }); 
-    setShowNewExamModal(false); 
+
+  const handleSaveNewExam = () => {
+    if (!newExamData.label.trim()) return alert("Nome obrigatório");
+    const key = newExamData.label.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    if (availableExams[key]) return alert("Já existe um exame com este nome.");
+    const updatedSettings = { ...settings, customExamTypes: { ...(settings.customExamTypes || {}), [key]: { label: newExamData.label, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion } } };
+    onUpdateSettings(updatedSettings);
+    setReport({ ...report, examType: key, equipment: newExamData.equipment, findings: newExamData.findings, conclusion: newExamData.conclusion });
+    setShowNewExamModal(false);
     setNewExamData({ label: '', equipment: '', findings: '', conclusion: '', key: '' });
   };
 
@@ -224,11 +224,11 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     }
   };
 
-  const handleSaveTemplate = () => { 
-    if (!newTemplateName.trim()) return alert("Nome obrigatório"); 
-    const newTemplate: CustomTemplate = { id: crypto.randomUUID(), name: newTemplateName, content: report.findings, examType: report.examType }; 
-    onUpdateSettings({ ...settings, customTemplates: [...(settings.customTemplates || []), newTemplate] }); 
-    setIsSavingTemplate(false); setNewTemplateName(''); setShowTemplateMenu(false); 
+  const handleSaveTemplate = () => {
+    if (!newTemplateName.trim()) return alert("Nome obrigatório");
+    const newTemplate: CustomTemplate = { id: crypto.randomUUID(), name: newTemplateName, content: report.findings, examType: report.examType };
+    onUpdateSettings({ ...settings, customTemplates: [...(settings.customTemplates || []), newTemplate] });
+    setIsSavingTemplate(false); setNewTemplateName(''); setShowTemplateMenu(false);
   };
 
   const handleApplyTemplate = (content: string) => { if (confirm("Substituir texto?")) { setReport({ ...report, findings: content }); setShowTemplateMenu(false); } };
@@ -240,8 +240,8 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
 
   const stopDictation = () => {
     if (recognitionRef.current) {
-        recognitionRef.current.stop();
-        recognitionRef.current = null;
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
     }
     setIsListening(null);
   };
@@ -251,15 +251,15 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     if (!SpeechRecognition) return alert("Seu navegador não suporta reconhecimento de voz.");
 
     if (isListening === field) {
-        stopDictation();
-        return;
+      stopDictation();
+      return;
     }
 
     if (isListening) stopDictation();
 
     const recognition = new SpeechRecognition();
     recognition.lang = 'pt-BR';
-    recognition.continuous = true; 
+    recognition.continuous = true;
     recognition.interimResults = false;
     recognitionRef.current = recognition;
 
@@ -297,9 +297,9 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     recognition.start();
   };
 
-  const handleAiRefine = async () => { setIsRefining(true); try { const refined = await refineTextWithAI(report.findings); setReport({ ...report, findings: refined }); } catch (error: any) { alert(error.message); } finally { setIsRefining(false); } };
-  const handleAiConclusion = async () => { if (!report.findings.trim()) return alert("Descreva os achados primeiro."); setIsGeneratingConclusion(true); try { const suggestedConclusion = await generateConclusionWithAI(report.findings); setReport({ ...report, conclusion: suggestedConclusion }); } catch (error: any) { alert(error.message); } finally { setIsGeneratingConclusion(false); } };
-  const handleEnhanceImage = async (id: string, currentUrl: string) => { setEnhancingImageId(id); try { const newUrl = await enhanceMedicalImage(currentUrl); const newImage: CapturedImage = { id: crypto.randomUUID(), url: newUrl, timestamp: Date.now(), type: 'regular', isAiEnhanced: true, caption: '' }; onAddImageAfter(id, newImage); } catch (e: any) { alert("Erro ao aprimorar imagem: " + e.message); } finally { setEnhancingImageId(null); } };
+  const handleAiRefine = async () => { setIsRefining(true); try { const refined = await refineTextWithAI(report.findings, settings.apiKey); setReport({ ...report, findings: refined }); } catch (error: any) { alert(error.message); } finally { setIsRefining(false); } };
+  const handleAiConclusion = async () => { if (!report.findings.trim()) return alert("Descreva os achados primeiro."); setIsGeneratingConclusion(true); try { const suggestedConclusion = await generateConclusionWithAI(report.findings, settings.apiKey); setReport({ ...report, conclusion: suggestedConclusion }); } catch (error: any) { alert(error.message); } finally { setIsGeneratingConclusion(false); } };
+  const handleEnhanceImage = async (id: string, currentUrl: string) => { setEnhancingImageId(id); try { const newUrl = await enhanceMedicalImage(currentUrl, settings.apiKey); const newImage: CapturedImage = { id: crypto.randomUUID(), url: newUrl, timestamp: Date.now(), type: 'regular', isAiEnhanced: true, caption: '' }; onAddImageAfter(id, newImage); } catch (e: any) { alert("Erro ao aprimorar imagem: " + e.message); } finally { setEnhancingImageId(null); } };
   const handlePrint = () => { window.print(); };
   const openLaringoAI = () => { window.open('https://laringoai-analyzer-1012296117240.us-west1.run.app/', '_blank'); setShowLaringoModal(false); };
 
@@ -307,7 +307,7 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
   const getLogoMargins = () => { if (settings.logoPosition === 'center') return 'mb-4'; if (settings.logoPosition === 'right') return 'ml-6'; return 'mr-6'; };
   const getLogoSizeClass = () => { switch (settings.logoSize) { case 'small': return 'h-16 w-auto'; case 'large': return 'h-40 w-auto'; default: return 'h-24 w-auto'; } };
   const gridColsClass = { 1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3', 4: 'grid-cols-4', 5: 'grid-cols-5', 6: 'grid-cols-6' }[settings.photosGridColumns || 4] || 'grid-cols-4';
-  
+
   const renderField = (label: string, value: string | undefined, onChange: (val: string) => void, placeholder: string = "", colSpan: string = "col-span-12") => (
     <div className={colSpan}>
       <label className="text-[10px] font-bold text-slate-500 uppercase block mb-0.5">{label}</label>
@@ -315,20 +315,20 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
       <div className="hidden print:block text-slate-900 pb-0.5 border-b border-slate-300 text-sm min-h-[1.5em] border-0">{value}</div>
     </div>
   );
-  
+
   const getExamLabel = () => { const tpl = availableExams[report.examType]; return tpl ? tpl.label : "LAUDO VIDEO-ENDOSCÓPICO"; };
 
   return (
-    <div 
-      ref={editorContainerRef} 
+    <div
+      ref={editorContainerRef}
       className={`${fontClass} font-content-wrapper h-full bg-white overflow-y-auto flex justify-center no-scrollbar relative print:h-auto print:overflow-visible print:block print:static print:bg-white`}
       style={{ fontSize: (settings.printFontSize || 100) + '%' }}
     >
       <div className="fixed top-4 left-4 flex gap-2 no-print z-40">
-          <button onClick={onNewReport} className="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-500 border-2 border-white" title="Novo Exame"><FilePlus size={20} /></button>
-          <button onClick={onOpenSettings} className="bg-slate-800 text-white p-3 rounded-full shadow-lg hover:bg-slate-700 border-2 border-white" title="Configurações"><SettingsIcon size={20} /></button>
-          <button onClick={handlePrint} className="bg-blue-700 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 border-2 border-white" title="Imprimir"><Printer size={20} /></button>
-          <button onClick={onOpenUserManual} className="bg-amber-500 text-white p-3 rounded-full shadow-lg hover:bg-amber-600 border-2 border-white" title="Manual do Usuário"><BookOpen size={20} /></button>
+        <button onClick={onNewReport} className="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-500 border-2 border-white" title="Novo Exame"><FilePlus size={20} /></button>
+        <button onClick={onOpenSettings} className="bg-slate-800 text-white p-3 rounded-full shadow-lg hover:bg-slate-700 border-2 border-white" title="Configurações"><SettingsIcon size={20} /></button>
+        <button onClick={handlePrint} className="bg-blue-700 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 border-2 border-white" title="Imprimir"><Printer size={20} /></button>
+        <button onClick={onOpenUserManual} className="bg-amber-500 text-white p-3 rounded-full shadow-lg hover:bg-amber-600 border-2 border-white" title="Manual do Usuário"><BookOpen size={20} /></button>
       </div>
 
       <div id="report-content" ref={reportContentRef} className="w-full max-w-5xl h-auto min-h-full p-8 md:p-12 print:p-0 print:w-full print:max-w-none print:shadow-none print:m-0 print-full-width print:pointer-events-auto">
@@ -338,66 +338,66 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
         </header>
 
         <div className={`mb-6 rounded-lg border-2 ${colors.lightBorder} ${colors.bg} p-4 print:border-none print:shadow-none print:bg-transparent print:p-0 print:mb-2`}>
-            <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
-              {renderField("Nome do Paciente", patient.name, (val) => setPatient({...patient, name: val}), "Nome completo", "col-span-6")}
-              {renderField("Idade", patient.age, (val) => setPatient({...patient, age: val}), "Anos", "col-span-2")}
-              {renderField("Sexo", patient.gender, (val) => setPatient({...patient, gender: val as any}), "M/F", "col-span-2")}
-              {renderField("Data", patient.date, (val) => setPatient({...patient, date: val}), "DD/MM/AAAA", "col-span-2")}
-            </div>
-            <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
-              {visible.document && renderField("Documento (RG/CPF)", patient.document, (val) => setPatient({...patient, document: val}), "RG ou CPF", "col-span-4")}
-              {visible.profession && renderField("Profissão", patient.profession, (val) => setPatient({...patient, profession: val}), "Opcional", "col-span-4")}
-              {visible.insurance && renderField("Convênio", patient.insurance, (val) => setPatient({...patient, insurance: val}), "Particular / Plano", "col-span-4")}
-            </div>
-            <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">{visible.address && renderField("Endereço / Procedência", patient.address, (val) => setPatient({...patient, address: val}), "Cidade - UF", "col-span-12")}</div>
-            <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
-              {renderField("Exame realizado por", patient.performedBy, (val) => setPatient({...patient, performedBy: val}), "Nome do médico", "col-span-4")}
-              {visible.indicatedBy && renderField("Referenciado por", patient.indicatedBy, (val) => setPatient({...patient, indicatedBy: val}), "Nome do colega", "col-span-4")}
-              {visible.requestedBy && renderField("Médico Solicitante", patient.requestedBy, (val) => setPatient({...patient, requestedBy: val}), "Nome do solicitante", "col-span-4")}
-            </div>
-            {customFields.length > 0 && <div className="grid grid-cols-12 gap-x-4 gap-y-2 mt-2 pt-2 border-t border-slate-200/50">{customFields.map((field) => renderField(field, patient.customValues[field], (val) => setPatient({...patient, customValues: {...patient.customValues, [field]: val}}), "...", "col-span-4"))}</div>}
+          <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
+            {renderField("Nome do Paciente", patient.name, (val) => setPatient({ ...patient, name: val }), "Nome completo", "col-span-6")}
+            {renderField("Idade", patient.age, (val) => setPatient({ ...patient, age: val }), "Anos", "col-span-2")}
+            {renderField("Sexo", patient.gender, (val) => setPatient({ ...patient, gender: val as any }), "M/F", "col-span-2")}
+            {renderField("Data", patient.date, (val) => setPatient({ ...patient, date: val }), "DD/MM/AAAA", "col-span-2")}
+          </div>
+          <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
+            {visible.document && renderField("Documento (RG/CPF)", patient.document, (val) => setPatient({ ...patient, document: val }), "RG ou CPF", "col-span-4")}
+            {visible.profession && renderField("Profissão", patient.profession, (val) => setPatient({ ...patient, profession: val }), "Opcional", "col-span-4")}
+            {visible.insurance && renderField("Convênio", patient.insurance, (val) => setPatient({ ...patient, insurance: val }), "Particular / Plano", "col-span-4")}
+          </div>
+          <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">{visible.address && renderField("Endereço / Procedência", patient.address, (val) => setPatient({ ...patient, address: val }), "Cidade - UF", "col-span-12")}</div>
+          <div className="grid grid-cols-12 gap-x-4 gap-y-2 mb-2">
+            {renderField("Exame realizado por", patient.performedBy, (val) => setPatient({ ...patient, performedBy: val }), "Nome do médico", "col-span-4")}
+            {visible.indicatedBy && renderField("Referenciado por", patient.indicatedBy, (val) => setPatient({ ...patient, indicatedBy: val }), "Nome do colega", "col-span-4")}
+            {visible.requestedBy && renderField("Médico Solicitante", patient.requestedBy, (val) => setPatient({ ...patient, requestedBy: val }), "Nome do solicitante", "col-span-4")}
+          </div>
+          {customFields.length > 0 && <div className="grid grid-cols-12 gap-x-4 gap-y-2 mt-2 pt-2 border-t border-slate-200/50">{customFields.map((field) => renderField(field, patient.customValues[field], (val) => setPatient({ ...patient, customValues: { ...patient.customValues, [field]: val } }), "...", "col-span-4"))}</div>}
         </div>
-        
+
         <div className="mb-4 no-print bg-slate-50 p-2 rounded-lg border border-slate-200 flex items-center justify-start gap-2">
-            <label className="text-xs font-bold text-slate-500 uppercase shrink-0">Tipo de Exame:</label>
-            <div className="flex-1 flex items-center gap-2">
-              <select value={report.examType} onChange={handleExamChange} className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium outline-none focus:border-blue-500 cursor-pointer">
-                <option value="" disabled>Escolha...</option>
-                <option value="NEW_CUSTOM_EXAM" className="font-bold text-blue-600">+ Criar Novo...</option>
-                {(settings.customExamTypes && Object.keys(settings.customExamTypes).length > 0) && (
-                  <optgroup label="Meus Exames">
-                    {Object.entries(settings.customExamTypes).map(([key, tpl]) => (
-                      <option key={key} value={key}>{(tpl as ExamTemplate).label}</option>
-                    ))}
-                  </optgroup>
-                )}
-                <optgroup label="Padrões">
-                  {Object.entries(EXAM_TEMPLATES).map(([key, tpl]) => (
+          <label className="text-xs font-bold text-slate-500 uppercase shrink-0">Tipo de Exame:</label>
+          <div className="flex-1 flex items-center gap-2">
+            <select value={report.examType} onChange={handleExamChange} className="flex-1 bg-white border border-slate-300 rounded px-2 py-1 text-sm font-medium outline-none focus:border-blue-500 cursor-pointer">
+              <option value="" disabled>Escolha...</option>
+              <option value="NEW_CUSTOM_EXAM" className="font-bold text-blue-600">+ Criar Novo...</option>
+              {(settings.customExamTypes && Object.keys(settings.customExamTypes).length > 0) && (
+                <optgroup label="Meus Exames">
+                  {Object.entries(settings.customExamTypes).map(([key, tpl]) => (
                     <option key={key} value={key}>{(tpl as ExamTemplate).label}</option>
                   ))}
                 </optgroup>
-              </select>
-              {isSelectedCustom && (
-                <button 
-                  onClick={handleDeleteCustomExam} 
-                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" 
-                  title="Excluir este tipo de exame"
-                >
-                  <Trash2 size={16} />
-                </button>
               )}
-            </div>
+              <optgroup label="Padrões">
+                {Object.entries(EXAM_TEMPLATES).map(([key, tpl]) => (
+                  <option key={key} value={key}>{(tpl as ExamTemplate).label}</option>
+                ))}
+              </optgroup>
+            </select>
+            {isSelectedCustom && (
+              <button
+                onClick={handleDeleteCustomExam}
+                className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                title="Excluir este tipo de exame"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="text-center mb-6 break-inside-avoid print:mb-2"><h2 className={`text-xl font-bold uppercase inline-block px-8 pb-1 ${colors.text} tracking-wide`}>{getExamLabel()}</h2></div>
 
         <div className="mb-6 flex flex-col gap-1 break-inside-avoid print:mb-2">
-            <div className="flex justify-between items-end">
-               <label className="block text-xs font-bold text-slate-500 uppercase">Equipamento utilizado e Preparo</label>
-               <div className="relative no-print"><button onClick={() => setShowEquipmentMenu(!showEquipmentMenu)} className="text-slate-400 hover:text-blue-600 transition-colors p-1"><SettingsIcon size={14} /></button>{showEquipmentMenu && <div className="absolute right-0 top-6 bg-white border shadow-xl rounded-md w-64 z-50 p-2"><h4 className="text-xs font-bold text-slate-500 uppercase mb-2 px-2 border-b pb-1">Meus Equipamentos</h4><div className="max-h-40 overflow-y-auto mb-2">{(settings.savedEquipments || []).map((eq) => (<div key={eq} className="flex justify-between items-center hover:bg-slate-50 p-1 rounded group"><button type="button" onClick={() => { setReport({...report, equipment: eq}); setShowEquipmentMenu(false); }} className="text-sm text-slate-700 text-left truncate flex-1">{eq}</button><button type="button" onClick={(e) => handleDeleteEquipment(eq, e)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 size={12}/></button></div>))}</div><button type="button" onClick={handleSaveEquipment} className="w-full text-xs bg-blue-50 text-blue-700 font-bold py-1.5 rounded hover:bg-blue-100 flex items-center justify-center gap-1"><Save size={12} /> Salvar Atual</button></div>}</div>
-            </div>
-            <input type="text" value={report.equipment} onChange={e => setReport({ ...report, equipment: e.target.value })} className="w-full border-b border-slate-300 py-1 outline-none focus:border-blue-500 text-sm print:hidden" placeholder="Descreva o equipamento e o preparo..." />
-            <div className="hidden print:block text-sm border-b border-slate-300 py-1 min-h-[1.5em] border-0">{report.equipment}</div>
+          <div className="flex justify-between items-end">
+            <label className="block text-xs font-bold text-slate-500 uppercase">Equipamento utilizado e Preparo</label>
+            <div className="relative no-print"><button onClick={() => setShowEquipmentMenu(!showEquipmentMenu)} className="text-slate-400 hover:text-blue-600 transition-colors p-1"><SettingsIcon size={14} /></button>{showEquipmentMenu && <div className="absolute right-0 top-6 bg-white border shadow-xl rounded-md w-64 z-50 p-2"><h4 className="text-xs font-bold text-slate-500 uppercase mb-2 px-2 border-b pb-1">Meus Equipamentos</h4><div className="max-h-40 overflow-y-auto mb-2">{(settings.savedEquipments || []).map((eq) => (<div key={eq} className="flex justify-between items-center hover:bg-slate-50 p-1 rounded group"><button type="button" onClick={() => { setReport({ ...report, equipment: eq }); setShowEquipmentMenu(false); }} className="text-sm text-slate-700 text-left truncate flex-1">{eq}</button><button type="button" onClick={(e) => handleDeleteEquipment(eq, e)} className="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 size={12} /></button></div>))}</div><button type="button" onClick={handleSaveEquipment} className="w-full text-xs bg-blue-50 text-blue-700 font-bold py-1.5 rounded hover:bg-blue-100 flex items-center justify-center gap-1"><Save size={12} /> Salvar Atual</button></div>}</div>
+          </div>
+          <input type="text" value={report.equipment} onChange={e => setReport({ ...report, equipment: e.target.value })} className="w-full border-b border-slate-300 py-1 outline-none focus:border-blue-500 text-sm print:hidden" placeholder="Descreva o equipamento e o preparo..." />
+          <div className="hidden print:block text-sm border-b border-slate-300 py-1 min-h-[1.5em] border-0">{report.equipment}</div>
         </div>
 
         <div className="mb-8 print:mb-2 group/section">
@@ -408,8 +408,8 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
               <button onClick={() => startDictation('findings')} className={`no-print p-2 rounded-full shadow-sm transition-all ${isListening === 'findings' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'}`} title="Ditar Achados"><Mic size={16} /></button>
             </div>
             <div className="flex items-center gap-2 relative no-print">
-                <button onClick={() => setShowTemplateMenu(!showTemplateMenu)} className="flex items-center gap-1.5 text-xs font-bold bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-lg shadow-sm transition-all"><BookTemplate size={14} /><span>Modelos</span></button>
-                {showTemplateMenu && <div className="absolute right-0 top-10 bg-white border shadow-2xl rounded-xl w-72 z-50 p-3 animate-in fade-in zoom-in-95 duration-150"><div className="flex justify-between items-center border-b pb-2.5 mb-2.5"><span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Meus Modelos</span><button onClick={() => setShowTemplateMenu(false)}><X size={14} className="text-slate-400 hover:text-slate-600"/></button></div><div className="max-h-56 overflow-y-auto space-y-1 mb-3 pr-1 thin-scrollbar">{currentExamTemplates.length > 0 ? (currentExamTemplates.map((tpl) => (<div key={tpl.id} className="group flex items-center justify-between p-2.5 hover:bg-blue-50 rounded-lg cursor-pointer border border-transparent hover:border-blue-100 transition-all"><div onClick={() => handleApplyTemplate(tpl.content)} className="flex-1"><span className="block text-sm font-bold text-slate-800">{tpl.name}</span><span className="block text-[10px] text-slate-400 truncate mt-0.5">{tpl.content.substring(0, 40)}...</span></div><button type="button" onClick={(e) => handleDeleteTemplate(tpl.id, e)} className="text-slate-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100"><Trash2 size={14} /></button></div>))) : <div className="text-center py-6 text-xs text-slate-400 italic">Nenhum modelo salvo para este exame.</div>}</div><div className="pt-2.5 border-t bg-slate-50 -mx-3 -mb-3 p-3 rounded-b-xl">{!isSavingTemplate ? (<button onClick={() => setIsSavingTemplate(true)} className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg shadow-md shadow-blue-100"><Save size={14} /> Salvar Texto Atual</button>) : (<div className="flex gap-2"><input type="text" autoFocus placeholder="Nome do modelo..." value={newTemplateName} onChange={e => setNewTemplateName(e.target.value)} className="flex-1 text-xs border border-slate-300 rounded-lg px-2.5 outline-none focus:ring-2 focus:ring-blue-500/20"/><button onClick={handleSaveTemplate} className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700"><Save size={16}/></button><button onClick={() => setIsSavingTemplate(false)} className="bg-slate-200 text-slate-600 p-2 rounded-lg hover:bg-slate-300"><X size={16}/></button></div>)}</div></div>}
+              <button onClick={() => setShowTemplateMenu(!showTemplateMenu)} className="flex items-center gap-1.5 text-xs font-bold bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-lg shadow-sm transition-all"><BookTemplate size={14} /><span>Modelos</span></button>
+              {showTemplateMenu && <div className="absolute right-0 top-10 bg-white border shadow-2xl rounded-xl w-72 z-50 p-3 animate-in fade-in zoom-in-95 duration-150"><div className="flex justify-between items-center border-b pb-2.5 mb-2.5"><span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Meus Modelos</span><button onClick={() => setShowTemplateMenu(false)}><X size={14} className="text-slate-400 hover:text-slate-600" /></button></div><div className="max-h-56 overflow-y-auto space-y-1 mb-3 pr-1 thin-scrollbar">{currentExamTemplates.length > 0 ? (currentExamTemplates.map((tpl) => (<div key={tpl.id} className="group flex items-center justify-between p-2.5 hover:bg-blue-50 rounded-lg cursor-pointer border border-transparent hover:border-blue-100 transition-all"><div onClick={() => handleApplyTemplate(tpl.content)} className="flex-1"><span className="block text-sm font-bold text-slate-800">{tpl.name}</span><span className="block text-[10px] text-slate-400 truncate mt-0.5">{tpl.content.substring(0, 40)}...</span></div><button type="button" onClick={(e) => handleDeleteTemplate(tpl.id, e)} className="text-slate-300 hover:text-red-500 p-1 opacity-0 group-hover:opacity-100"><Trash2 size={14} /></button></div>))) : <div className="text-center py-6 text-xs text-slate-400 italic">Nenhum modelo salvo para este exame.</div>}</div><div className="pt-2.5 border-t bg-slate-50 -mx-3 -mb-3 p-3 rounded-b-xl">{!isSavingTemplate ? (<button onClick={() => setIsSavingTemplate(true)} className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-lg shadow-md shadow-blue-100"><Save size={14} /> Salvar Texto Atual</button>) : (<div className="flex gap-2"><input type="text" autoFocus placeholder="Nome do modelo..." value={newTemplateName} onChange={e => setNewTemplateName(e.target.value)} className="flex-1 text-xs border border-slate-300 rounded-lg px-2.5 outline-none focus:ring-2 focus:ring-blue-500/20" /><button onClick={handleSaveTemplate} className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700"><Save size={16} /></button><button onClick={() => setIsSavingTemplate(false)} className="bg-slate-200 text-slate-600 p-2 rounded-lg hover:bg-slate-300"><X size={16} /></button></div>)}</div></div>}
             </div>
           </div>
 
@@ -418,17 +418,17 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
             <textarea ref={findingsRef} value={report.findings} onChange={e => setReport({ ...report, findings: e.target.value })} className="w-full min-h-[350px] p-5 outline-none resize-none text-sm leading-relaxed print:hidden bg-slate-50/30 focus:bg-white transition-colors" placeholder="Descreva os achados detalhados do exame..." />
             <div className="hidden print:block p-0 text-sm leading-relaxed min-h-[1em]">{renderFormattedText(report.findings)}</div>
           </div>
-          
+
           <div className="mt-1 flex items-center gap-1.5 text-slate-400 no-print"><Info size={12} /><span className="text-[10px] font-medium italic">Dica: Termos entre asteriscos duplos (ex: **termo**) serão exibidos em negrito na impressão.</span></div>
-          
+
           <div className="mt-3 flex justify-end no-print"><button onClick={handleAiRefine} disabled={isRefining} className={`flex items-center gap-2 bg-gradient-to-r ${colors.aiBtn} text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 active:scale-95`}>{isRefining ? <Loader2 size={18} className="animate-spin" /> : <Wand2 size={18} />}<span>Refinar Texto com IA</span></button></div>
         </div>
 
         <div className="mb-6 print:mb-2 group/section">
-           <div className="flex justify-between items-center mb-2.5">
-              <div className="flex items-center gap-2.5"><div className="bg-slate-100 p-1.5 rounded-lg text-slate-600 group-hover/section:bg-indigo-50 group-hover/section:text-indigo-600 transition-colors"><BrainCircuit size={18} /></div><h3 className={`text-sm font-bold uppercase tracking-wider ${colors.text}`}>Conclusão / Hipótese Diagnóstica</h3><button onClick={() => startDictation('conclusion')} className={`no-print p-2 rounded-full shadow-sm transition-all ${isListening === 'conclusion' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'}`} title="Ditar Conclusão"><Mic size={16} /></button></div>
-              <button onClick={handleAiConclusion} disabled={isGeneratingConclusion} className={`no-print flex items-center gap-2 bg-gradient-to-r ${colors.aiBtn} text-white px-4 py-2 rounded-xl font-bold text-xs shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 active:scale-95`}>{isGeneratingConclusion ? <Loader2 size={14} className="animate-spin" /> : <Bot size={14} />}<span>Sugerir Conclusão com IA</span></button>
-           </div>
+          <div className="flex justify-between items-center mb-2.5">
+            <div className="flex items-center gap-2.5"><div className="bg-slate-100 p-1.5 rounded-lg text-slate-600 group-hover/section:bg-indigo-50 group-hover/section:text-indigo-600 transition-colors"><BrainCircuit size={18} /></div><h3 className={`text-sm font-bold uppercase tracking-wider ${colors.text}`}>Conclusão / Hipótese Diagnóstica</h3><button onClick={() => startDictation('conclusion')} className={`no-print p-2 rounded-full shadow-sm transition-all ${isListening === 'conclusion' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'}`} title="Ditar Conclusão"><Mic size={16} /></button></div>
+            <button onClick={handleAiConclusion} disabled={isGeneratingConclusion} className={`no-print flex items-center gap-2 bg-gradient-to-r ${colors.aiBtn} text-white px-4 py-2 rounded-xl font-bold text-xs shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 active:scale-95`}>{isGeneratingConclusion ? <Loader2 size={14} className="animate-spin" /> : <Bot size={14} />}<span>Sugerir Conclusão com IA</span></button>
+          </div>
           <div className={`relative border-2 rounded-xl overflow-hidden transition-all duration-300 ${isListening === 'conclusion' ? 'border-red-400 ring-4 ring-red-50' : 'border-slate-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-50/50 focus-within:shadow-sm'} bg-slate-50/50 print:bg-white print:border-none print:p-0`}>
             {isListening === 'conclusion' && <div className="absolute top-3 right-3 flex items-center gap-2 text-red-500 text-[10px] font-bold uppercase tracking-widest animate-pulse bg-white border border-red-100 px-3 py-1.5 rounded-full shadow-sm z-10"><Mic size={14} /> Gravando...</div>}
             <textarea ref={conclusionRef} value={report.conclusion} onChange={e => setReport({ ...report, conclusion: e.target.value })} className="w-full min-h-[120px] p-5 outline-none resize-none text-sm leading-relaxed bg-transparent font-bold text-slate-800 print:hidden placeholder:font-normal" placeholder="Conclusão diagnóstica final..." />
@@ -477,32 +477,32 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
       {showNewExamModal && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
-             <div className="bg-blue-700 p-4 text-white flex justify-between items-center">
-               <h3 className="font-bold flex items-center gap-2"><FilePlus size={20}/> Criar Novo Tipo de Exame</h3>
-               <button onClick={() => setShowNewExamModal(false)} className="hover:bg-white/20 p-1 rounded-full"><X size={20}/></button>
-             </div>
-             <div className="p-6 space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nome do Exame</label>
-                  <input type="text" value={newExamData.label} onChange={e => setNewExamData({...newExamData, label: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Vídeo-Estroboscopia Digital" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Equipamento Padrão</label>
-                  <input type="text" value={newExamData.equipment} onChange={e => setNewExamData({...newExamData, equipment: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Ótica rígida de 70 graus..." />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Esqueleto de Achados (Findings)</label>
-                  <textarea value={newExamData.findings} onChange={e => setNewExamData({...newExamData, findings: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors h-32 resize-none" placeholder="**Anatomia:** \n**Mobilidade:** ..." />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Conclusão Padrão</label>
-                  <input type="text" value={newExamData.conclusion} onChange={e => setNewExamData({...newExamData, conclusion: e.target.value})} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: **Exame compatível com:** " />
-                </div>
-             </div>
-             <div className="bg-slate-50 p-4 flex justify-end gap-3">
-                <button onClick={() => setShowNewExamModal(false)} className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancelar</button>
-                <button onClick={handleSaveNewExam} className="bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-blue-800 flex items-center gap-2 transition-all"><Save size={18}/> Salvar e Usar</button>
-             </div>
+            <div className="bg-blue-700 p-4 text-white flex justify-between items-center">
+              <h3 className="font-bold flex items-center gap-2"><FilePlus size={20} /> Criar Novo Tipo de Exame</h3>
+              <button onClick={() => setShowNewExamModal(false)} className="hover:bg-white/20 p-1 rounded-full"><X size={20} /></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nome do Exame</label>
+                <input type="text" value={newExamData.label} onChange={e => setNewExamData({ ...newExamData, label: e.target.value })} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Vídeo-Estroboscopia Digital" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Equipamento Padrão</label>
+                <input type="text" value={newExamData.equipment} onChange={e => setNewExamData({ ...newExamData, equipment: e.target.value })} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: Ótica rígida de 70 graus..." />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Esqueleto de Achados (Findings)</label>
+                <textarea value={newExamData.findings} onChange={e => setNewExamData({ ...newExamData, findings: e.target.value })} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors h-32 resize-none" placeholder="**Anatomia:** \n**Mobilidade:** ..." />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Conclusão Padrão</label>
+                <input type="text" value={newExamData.conclusion} onChange={e => setNewExamData({ ...newExamData, conclusion: e.target.value })} className="w-full border-2 rounded-lg p-2 outline-none focus:border-blue-500 transition-colors" placeholder="Ex: **Exame compatível com:** " />
+              </div>
+            </div>
+            <div className="bg-slate-50 p-4 flex justify-end gap-3">
+              <button onClick={() => setShowNewExamModal(false)} className="px-4 py-2 text-slate-600 font-bold hover:bg-slate-100 rounded-lg">Cancelar</button>
+              <button onClick={handleSaveNewExam} className="bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg hover:bg-blue-800 flex items-center gap-2 transition-all"><Save size={18} /> Salvar e Usar</button>
+            </div>
           </div>
         </div>
       )}
@@ -510,15 +510,15 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
       {showLaringoModal && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm no-print">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
-             <div className="p-6 text-center">
-                <div className="bg-blue-50 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-blue-100"><Bot size={32}/></div>
-                <h3 className="text-lg font-bold text-slate-800 mb-2">Análise com LaringoAI?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed mb-6">Deseja abrir o analisador externo especializado para este exame de laringe?</p>
-                <div className="flex flex-col gap-3">
-                   <button onClick={openLaringoAI} className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-800 flex items-center justify-center gap-2 transition-all"><ExternalLink size={18}/> Abrir LaringoAI Analyzer</button>
-                   <button onClick={() => setShowLaringoModal(false)} className="text-slate-400 text-sm font-bold hover:text-slate-600 transition-colors">Agora não</button>
-                </div>
-             </div>
+            <div className="p-6 text-center">
+              <div className="bg-blue-50 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-blue-100"><Bot size={32} /></div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">Análise com LaringoAI?</h3>
+              <p className="text-sm text-slate-500 leading-relaxed mb-6">Deseja abrir o analisador externo especializado para este exame de laringe?</p>
+              <div className="flex flex-col gap-3">
+                <button onClick={openLaringoAI} className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-800 flex items-center justify-center gap-2 transition-all"><ExternalLink size={18} /> Abrir LaringoAI Analyzer</button>
+                <button onClick={() => setShowLaringoModal(false)} className="text-slate-400 text-sm font-bold hover:text-slate-600 transition-colors">Agora não</button>
+              </div>
+            </div>
           </div>
         </div>
       )}

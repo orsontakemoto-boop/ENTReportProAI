@@ -49,14 +49,15 @@ export const DEFAULT_SETTINGS = {
   rqe: "12345",
   logoBase64: null,
   signatureBase64: null,
-  
+  apiKey: '',
+
   landingHeroImage: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1000&q=80",
   landingShowcaseImage: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=1200&q=80",
 
   savedEquipments: ["Ótica Rígida 70º", "Nasofibroscópio Flexível 3.2mm", "Ótica Rígida 0º"],
-  customTemplates: [], 
-  customExamTypes: {}, 
-  
+  customTemplates: [],
+  customExamTypes: {},
+
   visiblePatientFields: {
     document: true,
     profession: true,
@@ -65,21 +66,21 @@ export const DEFAULT_SETTINGS = {
     indicatedBy: true,
     requestedBy: true
   },
-  customPatientFields: [], 
+  customPatientFields: [],
 
   photosGridColumns: 4,
-  burstSpeed: 15, 
-  autoCropEnabled: true, 
-  
+  burstSpeed: 15,
+  autoCropEnabled: true,
+
   selectedCameraId: '',
   fontFamily: 'Century Gothic',
   logoPosition: 'left',
   logoSize: 'medium',
   themeColor: 'blue',
-  printFontSize: 100, 
-  signaturePosition: 'center', 
-  signatureStyle: null, 
-  
+  printFontSize: 100,
+  signaturePosition: 'center',
+  signatureStyle: null,
+
   photoShortcut: 'F8',
   recordShortcut: 'F9',
   fullscreenShortcut: 'F10'

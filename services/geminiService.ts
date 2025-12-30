@@ -1,11 +1,16 @@
-
 // Use correct import for GoogleGenAI and response types
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-export const refineTextWithAI = async (text: string): Promise<string> => {
+const getGenAI = (apiKey?: string) => {
+  const key = apiKey || import.meta.env.VITE_API_KEY;
+  if (!key) throw new Error("API Key não configurada. Por favor, adicione sua chave nas configurações ou no arquivo .env");
+  return new GoogleGenAI({ apiKey: key });
+};
+
+export const refineTextWithAI = async (text: string, apiKey?: string): Promise<string> => {
   if (!text.trim()) throw new Error("Texto vazio.");
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
+  const ai = getGenAI(apiKey);
+
   const prompt = `
     Atue como um médico otorrinolaringologista sênior focado em laudos objetivos.
     Refine o texto abaixo para torná-lo técnico, porém DIRETO e SEM REBUSCAMENTO desnecessário.
@@ -23,20 +28,20 @@ export const refineTextWithAI = async (text: string): Promise<string> => {
 
   try {
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-1.5-flash',
       contents: prompt,
     });
     return response.text?.trim() || text;
   } catch (error) {
     console.error("Gemini Error:", error);
-    throw new Error("Falha ao conectar com a IA.");
+    throw new Error("Falha ao conectar com a IA. Verifique sua Chave API.");
   }
 };
 
-export const generateConclusionWithAI = async (findings: string): Promise<string> => {
+export const generateConclusionWithAI = async (findings: string, apiKey?: string): Promise<string> => {
   if (!findings.trim()) throw new Error("Achados vazios.");
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
+  const ai = getGenAI(apiKey);
+
   const prompt = `
     Atue como um médico otorrinolaringologista sênior.
     Forneça uma conclusão/hipótese diagnóstica baseada nos achados fornecidos.
@@ -53,24 +58,24 @@ export const generateConclusionWithAI = async (findings: string): Promise<string
 
   try {
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: 'gemini-1.5-pro',
       contents: prompt,
     });
     return response.text?.trim() || "";
   } catch (error) {
     console.error("Gemini Error:", error);
-    throw new Error("Erro na IA.");
+    throw new Error("Erro na IA. Verifique sua Chave API.");
   }
 };
 
-export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const enhanceMedicalImage = async (base64ImageUrl: string, apiKey?: string): Promise<string> => {
+  const ai = getGenAI(apiKey);
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
   if (!matches) throw new Error("Imagem inválida.");
-  
+
   try {
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: 'gemini-1.5-flash',
       contents: {
         parts: [
           { inlineData: { mimeType: matches[1], data: matches[2] } },
@@ -78,11 +83,11 @@ export const enhanceMedicalImage = async (base64ImageUrl: string): Promise<strin
         ]
       }
     });
-    const part = response.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    const part = response.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData);
     if (part?.inlineData?.data) return `data:image/png;base64,${part.inlineData.data}`;
     throw new Error("Sem retorno de imagem.");
   } catch (error) {
     console.error("Gemini Error:", error);
-    throw new Error("Falha no processamento de imagem.");
+    throw new Error("Falha no processamento de imagem. Verifique sua Chave API.");
   }
 };

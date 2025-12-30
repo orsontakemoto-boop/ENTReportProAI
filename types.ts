@@ -9,7 +9,8 @@ export interface DoctorSettings {
   rqe: string;
   logoBase64: string | null;
   signatureBase64: string | null;
-  
+  apiKey?: string;
+
   landingHeroImage: string | null;
   landingShowcaseImage: string | null;
 
@@ -17,7 +18,7 @@ export interface DoctorSettings {
   photosGridColumns: number;
   burstSpeed: number;
   autoCropEnabled: boolean;
-  
+
   customTemplates: CustomTemplate[];
   customExamTypes: Record<string, ExamTemplate>;
 
@@ -32,14 +33,14 @@ export interface DoctorSettings {
   customPatientFields: string[];
 
   selectedCameraId: string;
-  
+
   fontFamily: 'Century Gothic' | 'Inter' | 'Roboto' | 'Playfair Display' | 'Lato' | 'System Sans' | 'System Serif';
   logoPosition: 'left' | 'right' | 'center';
   logoSize: 'small' | 'medium' | 'large';
   themeColor: 'blue' | 'teal' | 'slate' | 'black';
   signaturePosition: 'left' | 'center' | 'right';
-  printFontSize: number; 
-  
+  printFontSize: number;
+
   signatureStyle: {
     x: number;
     y: number;
@@ -108,6 +109,14 @@ export interface BurstSession {
 }
 
 declare global {
+  interface ImportMetaEnv {
+    readonly VITE_API_KEY: string;
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
+
   interface Window {
     webkitSpeechRecognition: any;
     SpeechRecognition: any;
@@ -117,12 +126,8 @@ declare global {
   var html2pdf: any;
 
   // Augment the NodeJS namespace for global process.env
-  namespace NodeJS {
-    interface ProcessEnv {
-      API_KEY: string;
-    }
-  }
+
 }
 
 // Ensure the file is a module
-export {};
+export { };
