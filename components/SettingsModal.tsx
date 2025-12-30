@@ -697,8 +697,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, settings
         <div className="p-6 border-t bg-slate-50 flex justify-end gap-3">
           <button onClick={onClose} className="px-4 py-2 text-slate-700 hover:bg-slate-200 rounded-md">Cancelar</button>
           <button
-            onClick={() => onSave(formData)}
-            className="flex items-center gap-2 px-6 py-2 bg-blue-700 text-white rounded-md hover:bg-blue-800 shadow-sm"
+            onClick={() => {
+              // Garantir que a chave não tenha espaços extras
+              const cleanedSettings = {
+                ...formData,
+                apiKey: formData.apiKey ? formData.apiKey.trim() : formData.apiKey
+              };
+              onSave(cleanedSettings);
+              onClose();
+            }} className="flex items-center gap-2 px-6 py-2 bg-blue-700 text-white rounded-md hover:bg-blue-800 shadow-sm"
           >
             <Save size={18} />
             Salvar Configurações

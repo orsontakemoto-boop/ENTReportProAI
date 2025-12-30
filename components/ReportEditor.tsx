@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move, BrainCircuit, Type, Info } from 'lucide-react';
+import { Mic, Wand2, X, Printer, Settings as SettingsIcon, ExternalLink, Bot, FilePlus, Loader2, BookTemplate, Save, Trash2, Plus, FileText, PenTool, HelpCircle, BookOpen, Stethoscope, Layers, Sparkles, Check, Undo2, Zap, ZoomIn, ZoomOut, Move, BrainCircuit, Type, Info, Download } from 'lucide-react';
 import { DoctorSettings, PatientData, ReportData, CapturedImage, CustomTemplate, ExamTemplate } from '../types';
 import { EXAM_TEMPLATES } from '../constants';
 import { refineTextWithAI, enhanceMedicalImage, generateConclusionWithAI } from '../services/geminiService';
@@ -231,6 +231,38 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
     setIsSavingTemplate(false); setNewTemplateName(''); setShowTemplateMenu(false);
   };
 
+  const handleDownloadPdf = async () => {
+    const element = document.getElementById('report-content');
+    if (!element) return;
+    // 1. Ativar Modo de Impressão (CSS)
+    document.documentElement.classList.add('printing-mode');
+
+    // 2. Configurar PDF (Tentando imitar A4 exato)
+    const opt = {
+      margin: [10, 10, 10, 10], // mm
+      filename: `Laudo_${patient.name || 'Paciente'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // 3. Gerar
+    // @ts-ignore
+    if (window.html2pdf) {
+      try {
+        // @ts-ignore
+        await window.html2pdf().set(opt).from(element).save();
+      } catch (e) {
+        alert('Erro ao gerar PDF: ' + e);
+      } finally {
+        document.documentElement.classList.remove('printing-mode');
+      }
+    } else {
+      alert('Biblioteca PDF não carregada. Tente recarregar a página.');
+      document.documentElement.classList.remove('printing-mode');
+    }
+  };
+
   const handleApplyTemplate = (content: string) => { if (confirm("Substituir texto?")) { setReport({ ...report, findings: content }); setShowTemplateMenu(false); } };
   const handleDeleteTemplate = (id: string, e: React.MouseEvent) => { e.stopPropagation(); e.preventDefault(); if (confirm("Excluir?")) { onUpdateSettings({ ...settings, customTemplates: (settings.customTemplates || []).filter(t => t.id !== id) }); } };
   const handleSaveEquipment = () => { const newEq = report.equipment.trim(); if (!newEq || (settings.savedEquipments || []).includes(newEq)) return; onUpdateSettings({ ...settings, savedEquipments: [...(settings.savedEquipments || []), newEq] }); setShowEquipmentMenu(false); };
@@ -327,7 +359,8 @@ const ReportEditor: React.FC<ReportEditorProps> = ({ settings, patient, setPatie
       <div className="fixed top-4 left-4 flex gap-2 no-print z-40">
         <button onClick={onNewReport} className="bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-500 border-2 border-white" title="Novo Exame"><FilePlus size={20} /></button>
         <button onClick={onOpenSettings} className="bg-slate-800 text-white p-3 rounded-full shadow-lg hover:bg-slate-700 border-2 border-white" title="Configurações"><SettingsIcon size={20} /></button>
-        <button onClick={handlePrint} className="bg-blue-700 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 border-2 border-white" title="Imprimir"><Printer size={20} /></button>
+        <button onClick={handlePrint} className="bg-blue-700 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 border-2 border-white" title="Imprimir (Ctrl+P)"><Printer size={20} /></button>
+        <button onClick={handleDownloadPdf} className="bg-purple-700 text-white p-3 rounded-full shadow-lg hover:bg-purple-600 border-2 border-white" title="Baixar PDF"><Download size={20} /></button>
         <button onClick={onOpenUserManual} className="bg-amber-500 text-white p-3 rounded-full shadow-lg hover:bg-amber-600 border-2 border-white" title="Manual do Usuário"><BookOpen size={20} /></button>
       </div>
 

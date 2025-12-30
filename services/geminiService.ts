@@ -9,7 +9,7 @@ const getGenAI = (apiKey?: string) => {
 
 export const refineTextWithAI = async (text: string, apiKey?: string): Promise<string> => {
   if (!text.trim()) throw new Error("Texto vazio.");
-  const ai = getGenAI(apiKey);
+  const ai = getGenAI(apiKey?.trim());
 
   const prompt = `
     Atue como um médico otorrinolaringologista sênior focado em laudos objetivos.
@@ -32,15 +32,16 @@ export const refineTextWithAI = async (text: string, apiKey?: string): Promise<s
       contents: prompt,
     });
     return response.text?.trim() || text;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    throw new Error("Falha ao conectar com a IA. Verifique sua Chave API.");
+    const msg = error.message || JSON.stringify(error);
+    throw new Error(`Erro na IA: ${msg}. Verifique sua Chave API em Configurações.`);
   }
 };
 
 export const generateConclusionWithAI = async (findings: string, apiKey?: string): Promise<string> => {
   if (!findings.trim()) throw new Error("Achados vazios.");
-  const ai = getGenAI(apiKey);
+  const ai = getGenAI(apiKey?.trim());
 
   const prompt = `
     Atue como um médico otorrinolaringologista sênior.
@@ -62,14 +63,15 @@ export const generateConclusionWithAI = async (findings: string, apiKey?: string
       contents: prompt,
     });
     return response.text?.trim() || "";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    throw new Error("Erro na IA. Verifique sua Chave API.");
+    const msg = error.message || JSON.stringify(error);
+    throw new Error(`Erro na IA: ${msg}. Verifique sua Chave API.`);
   }
 };
 
 export const enhanceMedicalImage = async (base64ImageUrl: string, apiKey?: string): Promise<string> => {
-  const ai = getGenAI(apiKey);
+  const ai = getGenAI(apiKey?.trim());
   const matches = base64ImageUrl.match(/^data:(.+);base64,(.+)$/);
   if (!matches) throw new Error("Imagem inválida.");
 
@@ -86,8 +88,9 @@ export const enhanceMedicalImage = async (base64ImageUrl: string, apiKey?: strin
     const part = response.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData);
     if (part?.inlineData?.data) return `data:image/png;base64,${part.inlineData.data}`;
     throw new Error("Sem retorno de imagem.");
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    throw new Error("Falha no processamento de imagem. Verifique sua Chave API.");
+    const msg = error.message || JSON.stringify(error);
+    throw new Error(`Erro no processamento de imagem: ${msg}`);
   }
 };
