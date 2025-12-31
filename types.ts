@@ -9,7 +9,7 @@ export interface DoctorSettings {
   rqe: string;
   logoBase64: string | null;
   signatureBase64: string | null;
-  apiKey?: string;
+  apiKey: string;
 
   landingHeroImage: string | null;
   landingShowcaseImage: string | null;
@@ -50,6 +50,8 @@ export interface DoctorSettings {
   photoShortcut: string;
   recordShortcut: string;
   fullscreenShortcut: string;
+
+  preferredMicrophone?: string;
 }
 
 export interface CustomTemplate {
@@ -109,24 +111,22 @@ export interface BurstSession {
 }
 
 declare global {
-  interface ImportMetaEnv {
-    readonly VITE_API_KEY: string;
-  }
-
-  interface ImportMeta {
-    readonly env: ImportMetaEnv;
-  }
-
   interface Window {
     webkitSpeechRecognition: any;
     SpeechRecognition: any;
+    // Fixed duplicate
     showSaveFilePicker: (options?: any) => Promise<FileSystemFileHandle>;
     showDirectoryPicker: (options?: any) => Promise<FileSystemDirectoryHandle>;
+    html2pdf: any;
   }
-  var html2pdf: any;
+
 
   // Augment the NodeJS namespace for global process.env
-
+  namespace NodeJS {
+    interface ProcessEnv {
+      API_KEY: string;
+    }
+  }
 }
 
 // Ensure the file is a module
